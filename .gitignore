@@ -1,0 +1,10 @@
+/tf
+/test
+/.dapper
+/.cache
+/bin
+/build
+/dist
+*.swp
+*.txt
+.idea

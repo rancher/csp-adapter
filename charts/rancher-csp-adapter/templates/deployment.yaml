@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}
+  namespace: cattle-system
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      containers:
+      - env:
+          name: RANCHER_HOSTNAME
+          value: {{ .Values.rancherHostname }}
+        image: '{{ template "system_default_registry" . }}{{ .Values.image.repository }}:{{ .Values.image.tag }}'
+        name: {{ .Chart.Name }}
+        imagePullPolicy: "{{ .Values.image.imagePullPolicy }}"
+        ports:
+        - name: https
+          containerPort: 8443
+      serviceAccountName: {{ .Chart.Name }}

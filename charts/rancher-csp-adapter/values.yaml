@@ -1,0 +1,13 @@
+rancherHostname: ""
+
+image:
+  repository: rancher/rancher-csp-adapter
+  tag: latest
+  imagePullPolicy: IfNotPresent
+
+global:
+  cattle:
+    systemDefaultRegistry: ""
+  hostNetwork: false
+
+tolerations: []

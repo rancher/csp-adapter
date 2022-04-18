@@ -1,0 +1,24 @@
+#!/bin/bash
+set -e
+
+if ! hash helm 2>/dev/null; then
+    exit 0
+fi
+
+cd $(dirname $0)/..
+. ./scripts/version
+
+rm -rf build/charts
+mkdir -p build dist/artifacts
+cp -rf charts build/
+
+sed -i \
+    -e 's/version:.*/version: '${HELM_VERSION}'/' \
+    -e 's/appVersion:.*/appVersion: '${HELM_VERSION}'/' \
+    build/charts/csp-adapter/Chart.yaml
+
+sed -i \
+    -e 's/tag: latest/tag: '${HELM_TAG}'/' \
+    build/charts/csp-adapter/values.yaml
+
+helm package -d ./dist/artifacts ./build/charts/csp-adapter

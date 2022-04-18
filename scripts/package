@@ -1,0 +1,37 @@
+#!/bin/bash
+set -e
+
+source $(dirname $0)/version
+
+cd $(dirname $0)/..
+
+function build-image() {
+  IMAGE=${REPO}/${1}:${TAG}
+  DOCKERFILE=package/Dockerfile${2}
+  if [ -e ${DOCKERFILE}.${ARCH} ]; then
+      DOCKERFILE=${DOCKERFILE}.${ARCH}
+  fi
+
+  docker build -f ${DOCKERFILE} -t ${IMAGE} .
+  echo Built ${IMAGE}
+
+  if [ "$PUSH" = "true" ]; then
+      docker push ${IMAGE}
+  fi
+}
+
+mkdir -p dist/artifacts
+cp bin/csp-adapter dist/artifacts/csp-adapter-linux${SUFFIX}
+for i in bin/csp-adapter-*; do
+    if [ -e "$i" ]; then
+        if [ "$i" = csp-adapter-windows-amd64 ]; then
+            cp $i dist/artifacts/csp-adapter-windows-amd64.exe
+        else
+            cp $i dist/artifacts
+        fi
+    fi
+done
+
+build-image rancher-csp-adapter
+
+./scripts/package-helm

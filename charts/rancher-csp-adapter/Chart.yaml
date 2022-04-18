@@ -1,0 +1,11 @@
+apiVersion: v2
+name: rancher-csp-adapter
+description: Cloud Service Provider Marketplace Adapter for Rancher. Monitors entitlements against licensed amount.
+version: 999
+appVersion: 999
+annotations:
+  catalog.cattle.io/certified: rancher
+  catalog.cattle.io/hidden: "true"
+  catalog.cattle.io/namespace: cattle-system
+  catalog.cattle.io/release-name: rancher-csp-adapter
+  catalog.cattle.io/os: linux
