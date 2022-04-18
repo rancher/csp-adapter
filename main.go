@@ -4,7 +4,12 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/rancher/csp-adapter/pkg/clients/aws"
+	"github.com/rancher/csp-adapter/pkg/clients/k8s"
+	"github.com/rancher/csp-adapter/pkg/manager"
+	"github.com/rancher/csp-adapter/pkg/metrics"
 	"github.com/rancher/csp-adapter/pkg/server"
+	"github.com/rancher/csp-adapter/pkg/supportconfig"
 	"github.com/rancher/wrangler/pkg/k8scheck"
 	"github.com/rancher/wrangler/pkg/kubeconfig"
 	"github.com/rancher/wrangler/pkg/ratelimit"
@@ -24,9 +29,12 @@ func main() {
 }
 
 const (
-	debugEnv   = "CATTLE_DEBUG"
-	acctNumEnv = "CSP_ACCOUNT_NUMBER"
-	cspEnv     = "CSP_NAME"
+	debugEnv           = "CATTLE_DEBUG"
+	rancherHostnameEnv = "RANCHER_HOSTNAME" // this should come from the server-url setting in future
+)
+
+const (
+	csp = "aws" // hardcoded for now, AWS only
 )
 
 func run() error {
@@ -34,10 +42,9 @@ func run() error {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
 
-	acctNum := os.Getenv(acctNumEnv)
-	csp := os.Getenv(cspEnv)
-	if acctNum == "" || csp == "" {
-		logrus.Fatalf("env vars: %s, %s must be set", cspEnv, acctNumEnv)
+	rancherHostname := os.Getenv(rancherHostnameEnv)
+	if rancherHostname == "" {
+		return fmt.Errorf("%s must be specified in env", rancherHostnameEnv)
 	}
 
 	logrus.Infof("csp-adapter version %s is starting", fmt.Sprintf("%s (%s)", Version, GitCommit))
@@ -46,20 +53,46 @@ func run() error {
 	if err != nil {
 		return err
 	}
-
 	cfg.RateLimiter = ratelimit.None
 
 	ctx := signals.SetupSignalContext()
-
 	err = k8scheck.Wait(ctx, *cfg)
 	if err != nil {
 		return err
 	}
 
-	if err := server.ListenAndServe(ctx, cfg, csp, acctNum); err != nil {
+	k8sClients, err := k8s.New(ctx, cfg)
+	if err != nil {
 		return err
 	}
 
+	awsClient, err := aws.NewClient(ctx)
+	if err != nil {
+		return err
+	}
+
+	generator, err := supportconfig.NewGenerator(csp, "") //aws.AccountNumber())
+	if err != nil {
+		return err
+	}
+
+	if err := server.ListenAndServe(ctx, cfg, generator); err != nil {
+		return err
+	}
+
+	m := manager.NewAWS(awsClient, k8sClients, metrics.NewScraper(rancherHostname))
+
+	errs := make(chan error, 1)
+	m.Start(ctx, errs)
+	defer m.Stop()
+
+	go func() {
+		for err := range errs {
+			logrus.Errorf("aws manager error: %v", err)
+		}
+	}()
+
 	<-ctx.Done()
+
 	return nil
 }

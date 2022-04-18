@@ -1,9 +1,0 @@
-{
-    "support_eligible": true,
-    "csp": {
-        "name": "aws",
-        "acct_number": "125601231307"
-    },
-    "platform": "x86_64",
-    "product": "cpe:/o:suse:rancher:v2.6.3"
-}

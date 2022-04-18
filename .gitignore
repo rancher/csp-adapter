@@ -1,5 +1,6 @@
 /tf
 /test
+/example
 /.dapper
 /.cache
 /bin
@@ -8,3 +9,4 @@
 *.swp
 *.txt
 .idea
+.envrc

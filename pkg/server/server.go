@@ -18,7 +18,7 @@ const (
 	supportConfigPath = "/generate/supportconfig"
 )
 
-func ListenAndServe(ctx context.Context, cfg *rest.Config, csp, acctNum string) error {
+func ListenAndServe(ctx context.Context, cfg *rest.Config, gen supportconfig.Generator) error {
 	clients, err := k8s.New(ctx, cfg)
 	if err != nil {
 		return err
@@ -26,11 +26,6 @@ func ListenAndServe(ctx context.Context, cfg *rest.Config, csp, acctNum string) 
 
 	if err := setCertificateExpirationDays(); err != nil {
 		logrus.Infof("[ListenAndServe] could not set certificate expiration days via environment variable: %v", err)
-	}
-
-	gen, err := supportconfig.NewGenerator(csp, acctNum)
-	if err != nil {
-		return err
 	}
 
 	router := mux.NewRouter()

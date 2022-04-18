@@ -14,8 +14,11 @@ spec:
     spec:
       containers:
       - env:
-          name: RANCHER_HOSTNAME
+        # NOTE: remove this in favor of discovery from setting
+        - name: RANCHER_HOSTNAME
           value: {{ .Values.rancherHostname }}
+        - name: CATTLE_DEBUG
+          value: {{ .Values.debug | quote }}
         image: '{{ template "system_default_registry" . }}{{ .Values.image.repository }}:{{ .Values.image.tag }}'
         name: {{ .Chart.Name }}
         imagePullPolicy: "{{ .Values.image.imagePullPolicy }}"

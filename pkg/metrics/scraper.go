@@ -1,16 +1,11 @@
 package metrics
 
 import (
-	"fmt"
 	"net/http"
-	"os"
+	"strings"
 
 	dto "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
-)
-
-const (
-	file = "./metrics.txt"
 )
 
 // Scraper defines behavior that a Rancher metrics scraper should implement
@@ -23,16 +18,8 @@ type scraper struct {
 	cli        *http.Client
 }
 
-const (
-	rancherHostnameEnv = "RANCHER_HOSTNAME" // this should come from the server-url setting in future
-)
-
-func NewScraper() (Scraper, error) {
-	rancherURL := os.Getenv(rancherHostnameEnv)
-	if rancherURL == "" {
-		return nil, fmt.Errorf("%s must be specified in env", rancherHostnameEnv)
-	}
-	return &scraper{rancherURL: rancherURL}, nil
+func NewScraper(rancherHostname string) Scraper {
+	return &scraper{rancherURL: strings.Join([]string{"https://", rancherHostname}, "")}
 }
 
 func (s *scraper) ScrapeAndParse() (map[string]*dto.MetricFamily, error) {
@@ -41,8 +28,9 @@ func (s *scraper) ScrapeAndParse() (map[string]*dto.MetricFamily, error) {
 		return nil, err
 	}
 
+	defer res.Body.Close()
+
 	var parser expfmt.TextParser
-	defer res.Body.Close() // parser won't close so do it here
 	mf, err := parser.TextToMetricFamilies(res.Body)
 	if err != nil {
 		return nil, err

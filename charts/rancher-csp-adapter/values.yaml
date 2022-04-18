@@ -1,4 +1,10 @@
-rancherHostname: ""
+debug: true
+
+rancherHostname: "ryansann.ngrok.io"
+
+csp:
+  name: aws
+  acctNumber: "125601231307"
 
 image:
   repository: rancher/rancher-csp-adapter
