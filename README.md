@@ -1,50 +1,33 @@
-# Billing Service
-
-## Requirements
-
-- Information on support config and generating this
-- Metrics exposed from Rancher
-- AWS Product and licensing info
-- How the UI will interact with billing container
-- QA and local testing strategies need to be more well defined
-- More information needed around entitlements to nail down license manager logic
-- IAM permissions for licenses specific to Rancher for LicenseManager API calls
-- Criteria for which nodes to debit, i.e. all nodes or only active ones
-- Investigate containerization of Rancher support script
-  - audit against suse support config, figure out what's different / required
-  - Robert Schweikert can help answer questions here
-  - separate feature / separate project / separate container
+# CSP Adapter
 
 ## Overview
 
-The billing service will be a stateless service with a few main application components:
-- collector
-- manager
-- api
+The billing service is a stateless service that monitors node usages against entitlements defined in Cloud Service Provider license managers. Currently the csp-adapter only supports AWS and it assumes deployment to a Rancher local cluster.
 
-### Collector
+### Scraper
 
 The collector's job is to scrape the Rancher server's `/metrics` endpoint to gather node usage data.
-The Rancher metrics endpoint is authenticated, so a service account will need to be used. 
+
+The Rancher metrics endpoint requires authorization, so a service account will need to be used. 
+
 The collector will calculate the node counts from the metrics for several pre-defined buckets.
 
-#### Buckets
+### Clients
 
-1. Hosted Nodes
-- this will include counts from `<metric>{provider="gke|aks|eks", type="downstream"}`
+There are client packages for Kubernetes and AWS. The Kubernetes resources which requires clients are:
+- v1.ConfigMap
+- v1.Secret
+- v3.Setting
 
-2. Management Nodes
-- this will include counts from `<metric>{provider="all", type="management"}`
+The AWS client provides a common interface to AWS operations, which mostly include AWS License Manager interactions. 
 
-3. RKE Nodes
-- this will include counts from `<metric>{provider="rke|rke2|rke.windows|k3s", type="downstream"}`
+### Generator
 
-4. Longhorn Nodes
-- this will include counts from `<metric>{provider="longhorn", type="all"}`
+The supportconfig generator uses the `archive/tar` package to generate a tar in memory. The supportconfig archive can be obtained via an http request to the csp-adapter service.
 
 ### Manager
 
-The manager runs a reconciliation loop that ensures the appropriate licenses are checked out from the AWS License Manager.
+The manager runs a reconciliation loop that ensures the appropriate licenses are checked out from the AWS License Manager and that the Rancher setup is in compliance. The setup is said to be in compliance if the amount of nodes licensed is greater or equal to the amount of nodes currently in use.
 
 Upon startup, the manager will do the following:
 - List licenses for each product SKU we care about (predefined / hard-coded)
@@ -161,11 +144,3 @@ request body:
 ```
 
 `LicenseArn` is a required field
-
-
-## Packages
-
-- `pkg/metrics` - handles scraping, parsing and filtering of metrics from Rancher's `/metrics` endpoint
-- `pkg/server` - simple server for the app
-- `pkg/marketplace` - CSP marketplace wrappers
-- `pkg/supportconfig`- Contains generation logic for SUSE CSP Support Config

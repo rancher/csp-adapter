@@ -1,10 +1,7 @@
 debug: true
 
-rancherHostname: "ryansann.ngrok.io"
-
-csp:
-  name: aws
-  acctNumber: "125601231307"
+# remove when discovered from v3.Setting
+rancherHostname: ""
 
 image:
   repository: rancher/rancher-csp-adapter

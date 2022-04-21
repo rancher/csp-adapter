@@ -1,6 +1,6 @@
 apiVersion: v2
 name: rancher-csp-adapter
-description: Cloud Service Provider Marketplace Adapter for Rancher. Monitors entitlements against licensed amount.
+description: Cloud Service Provider Marketplace Adapter for Rancher. Monitors Rancher entitlements against usage.
 version: 999
 appVersion: 999
 annotations:
