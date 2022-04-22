@@ -76,7 +76,7 @@ func run() error {
 		return err
 	}
 
-	if err := server.ListenAndServe(ctx, cfg, generator); err != nil {
+	if err := server.ListenAndServe(ctx, cfg, k8sClients, generator); err != nil {
 		return err
 	}
 

@@ -1,12 +1,30 @@
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+apiVersion: v1
+kind: ServiceAccount
 metadata:
   name: {{ .Chart.Name }}
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
+  namespace: cattle-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Chart.Name }}-role
+rules:
+- apiGroups:
+  - management.cattle.io
+  resources:
+  - ranchermetrics
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1   
+kind: ClusterRoleBinding                                                                                                                       
+metadata:                                                                                                                                      
+  name: {{ .Chart.Name }}-binding
+roleRef:                                         
+  apiGroup: rbac.authorization.k8s.io          
+  kind: ClusterRole                           
   name: cluster-admin
 subjects:
-- kind: ServiceAccount
-  name: {{ .Chart.Name }}
-  namespace: {{ .Release.Namespace }}
+  - kind: ServiceAccount
+    name: {{ .Chart.Name }}
+    namespace: cattle-system

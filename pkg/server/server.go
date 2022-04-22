@@ -18,12 +18,7 @@ const (
 	supportConfigPath = "/generate/supportconfig"
 )
 
-func ListenAndServe(ctx context.Context, cfg *rest.Config, gen supportconfig.Generator) error {
-	clients, err := k8s.New(ctx, cfg)
-	if err != nil {
-		return err
-	}
-
+func ListenAndServe(ctx context.Context, cfg *rest.Config, clients *k8s.Clients, gen supportconfig.Generator) error {
 	if err := setCertificateExpirationDays(); err != nil {
 		logrus.Infof("[ListenAndServe] could not set certificate expiration days via environment variable: %v", err)
 	}
@@ -43,6 +38,7 @@ func setCertificateExpirationDays() error {
 }
 
 const (
+	port      = 8443
 	namespace = "cattle-system"
 	tlsName   = "csp-adapter.cattle-system.svc"
 	certName  = "cattle-csp-adapter-tls"
@@ -50,7 +46,7 @@ const (
 )
 
 func listenAndServe(ctx context.Context, clients *k8s.Clients, handler http.Handler) (rErr error) {
-	return server.ListenAndServe(ctx, 9443, 0, handler, &server.ListenOpts{
+	return server.ListenAndServe(ctx, port, 0, handler, &server.ListenOpts{
 		Secrets:       clients.Secrets,
 		CertNamespace: namespace,
 		CertName:      certName,

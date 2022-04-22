@@ -33,12 +33,12 @@ func NewClient(ctx context.Context) (Client, error) {
 		sts: sts.NewFromConfig(cfg),
 	}
 
-	acctNum, err := c.getAccountNumber(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	c.acctNum = acctNum
+	//acctNum, err := c.getAccountNumber(ctx)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//c.acctNum = acctNum
 
 	return c, nil
 }
