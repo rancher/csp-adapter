@@ -1,40 +1,81 @@
 package metrics
 
 import (
+	"crypto/tls"
+	"fmt"
 	"net/http"
 	"strings"
 
-	dto "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
+	"k8s.io/client-go/rest"
 )
 
 // Scraper defines behavior that a Rancher metrics scraper should implement
 type Scraper interface {
-	ScrapeAndParse() (map[string]*dto.MetricFamily, error)
+	ScrapeAndParse() (*NodeCounts, error)
 }
 
 type scraper struct {
-	rancherURL string
+	metricsURL string
 	cli        *http.Client
+	cfg        *rest.Config
 }
 
-func NewScraper(rancherHostname string) Scraper {
-	return &scraper{rancherURL: strings.Join([]string{"https://", rancherHostname}, "")}
+func NewScraper(rancherHost string, cfg *rest.Config) Scraper {
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: true,
+		},
+	}
+	return &scraper{
+		metricsURL: strings.Join([]string{"https://", rancherHost, "/metrics"}, ""),
+		cli:        &http.Client{Transport: tr},
+		cfg:        cfg,
+	}
 }
 
-func (s *scraper) ScrapeAndParse() (map[string]*dto.MetricFamily, error) {
-	res, err := s.cli.Get(s.rancherURL + "/metrics")
+const (
+	nodeGaugeMetricName = "cluster_manager_nodes"
+)
+
+type NodeCounts struct {
+	Total int
+}
+
+func (s *scraper) ScrapeAndParse() (*NodeCounts, error) {
+	req, err := http.NewRequest(http.MethodGet, s.metricsURL, nil)
 	if err != nil {
 		return nil, err
 	}
+	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", s.cfg.BearerToken))
 
+	res, err := s.cli.Do(req)
+	if err != nil {
+		return nil, err
+	}
 	defer res.Body.Close()
 
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("error got %v response", res.StatusCode)
+	}
+
 	var parser expfmt.TextParser
-	mf, err := parser.TextToMetricFamilies(res.Body)
+	metricFamilies, err := parser.TextToMetricFamilies(res.Body)
 	if err != nil {
 		return nil, err
 	}
 
-	return mf, nil
+	nodeMetricFamily, ok := metricFamilies[nodeGaugeMetricName]
+	if !ok {
+		return nil, fmt.Errorf("no metric with name %s found in rancher /metrics output", nodeGaugeMetricName)
+	}
+
+	var nodeCount int
+	for _, metric := range nodeMetricFamily.GetMetric() {
+		nodeCount += int(metric.GetGauge().GetValue())
+	}
+
+	return &NodeCounts{
+		Total: nodeCount,
+	}, nil
 }
