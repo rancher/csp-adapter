@@ -11,10 +11,10 @@ import (
 	"github.com/rancher/csp-adapter/pkg/server"
 	"github.com/rancher/csp-adapter/pkg/supportconfig"
 	"github.com/rancher/wrangler/pkg/k8scheck"
-	"github.com/rancher/wrangler/pkg/kubeconfig"
 	"github.com/rancher/wrangler/pkg/ratelimit"
 	"github.com/rancher/wrangler/pkg/signals"
 	"github.com/sirupsen/logrus"
+	"k8s.io/client-go/rest"
 )
 
 var (
@@ -49,7 +49,7 @@ func run() error {
 
 	logrus.Infof("csp-adapter version %s is starting", fmt.Sprintf("%s (%s)", Version, GitCommit))
 
-	cfg, err := kubeconfig.GetNonInteractiveClientConfig(os.Getenv("KUBECONFIG")).ClientConfig()
+	cfg, err := rest.InClusterConfig()
 	if err != nil {
 		return err
 	}
@@ -71,7 +71,7 @@ func run() error {
 		return err
 	}
 
-	generator, err := supportconfig.NewGenerator(csp, "") //aws.AccountNumber())
+	generator, err := supportconfig.NewGenerator(csp, awsClient.AccountNumber())
 	if err != nil {
 		return err
 	}
@@ -80,12 +80,10 @@ func run() error {
 		return err
 	}
 
-	m := manager.NewAWS(awsClient, k8sClients, metrics.NewScraper(rancherHostname))
+	m := manager.NewAWS(awsClient, k8sClients, metrics.NewScraper(rancherHostname, cfg))
 
 	errs := make(chan error, 1)
 	m.Start(ctx, errs)
-	defer m.Stop()
-
 	go func() {
 		for err := range errs {
 			logrus.Errorf("aws manager error: %v", err)
