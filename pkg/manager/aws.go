@@ -2,11 +2,14 @@ package manager
 
 import (
 	"context"
+	v3 "github.com/rancher/rancher/pkg/apis/management.cattle.io/v3"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/rancher/csp-adapter/pkg/clients/aws"
 	"github.com/rancher/csp-adapter/pkg/clients/k8s"
 	"github.com/rancher/csp-adapter/pkg/metrics"
 	"github.com/sirupsen/logrus"
+	apiError "k8s.io/apimachinery/pkg/api/errors"
 )
 
 type AWS struct {
@@ -45,4 +48,40 @@ func (m *AWS) start(ctx context.Context, errs chan<- error) {
 			return
 		}
 	}
+}
+
+const (
+	cspStatusName    = "aws-csp-status"
+	cspComponentName = "aws-csp"
+)
+
+func (m *AWS) updateComplianceStatus(newStatus bool, newReason string) error {
+	currentStatus, err := m.k8s.RancherStatus.Get(cspStatusName, metav1.GetOptions{})
+	if err != nil {
+		// if we don't have the status yet, the csp-adapter will need to create it
+		if apiError.IsNotFound(err) {
+			statusToCreate := &v3.RancherStatus{
+				ComponentStatus: newStatus,
+				Reason:          newReason,
+				ComponentName:   cspComponentName,
+				ObjectMeta: metav1.ObjectMeta{
+					Name: cspStatusName,
+				},
+			}
+			statusToCreate, err = m.k8s.RancherStatus.Create(statusToCreate)
+			if err != nil {
+				return err
+			}
+		}
+		return err
+	}
+	// if we already have the component, just update the status/reason to be consistent
+	updatedStatus := currentStatus.DeepCopy()
+	updatedStatus.ComponentStatus = newStatus
+	updatedStatus.Reason = newReason
+	updatedStatus, err = m.k8s.RancherStatus.Update(updatedStatus)
+	if err != nil {
+		return err
+	}
+	return nil
 }
