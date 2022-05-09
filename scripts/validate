@@ -10,5 +10,5 @@ if ! command -v golangci-lint; then
     exit
 fi
 
-#echo Running: golangci-lint
-#golangci-lint run
+echo Running: golangci-lint
+golangci-lint run

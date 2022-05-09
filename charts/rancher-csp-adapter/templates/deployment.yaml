@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Chart.Name }}
-  namespace: cattle-system
+  namespace: cattle-csp-system
 spec:
   selector:
     matchLabels:
@@ -24,5 +24,5 @@ spec:
         imagePullPolicy: "{{ .Values.image.imagePullPolicy }}"
         ports:
         - name: https
-          containerPort: 8443
+          containerPort: 9443
       serviceAccountName: {{ .Chart.Name }}
