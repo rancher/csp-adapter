@@ -2,11 +2,11 @@ kind: Service
 apiVersion: v1
 metadata:
   name: {{ .Chart.Name }}
-  namespace: cattle-system
+  namespace: cattle-csp-system
 spec:
   ports:
   - port: 443
-    targetPort: 8443
+    targetPort: 9443
     protocol: TCP
     name: https
   selector:
