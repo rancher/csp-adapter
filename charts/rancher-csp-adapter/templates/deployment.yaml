@@ -14,15 +14,19 @@ spec:
     spec:
       containers:
       - env:
-        # NOTE: remove this in favor of discovery from setting
-        - name: RANCHER_HOSTNAME
-          value: {{ .Values.rancherHostname }}
         - name: CATTLE_DEBUG
           value: {{ .Values.debug | quote }}
+        - name: K8S_OUTPUT_CONFIGMAP
+          value: '{{ template "csp-adapter.outputConfigMap"  }}'
+        - name: K8S_OUTPUT_NOTIFICATION
+          value: '{{ template "csp-adapter.outputNotification" }}'
+        - name: K8S_CACHE_SECRET
+          value: '{{ template "csp-adapter.cacheSecret"  }}'
+        - name: K8S_HOSTNAME_SETTING
+          value: '{{ template "csp-adapter.hostnameSetting"  }}'
+        - name: K8S_RANCHER_VERSION_SETTING
+          value: '{{ template "csp-adapter.versionSetting"  }}'
         image: '{{ template "system_default_registry" . }}{{ .Values.image.repository }}:{{ .Values.image.tag }}'
         name: {{ .Chart.Name }}
         imagePullPolicy: "{{ .Values.image.imagePullPolicy }}"
-        ports:
-        - name: https
-          containerPort: 9443
       serviceAccountName: {{ .Chart.Name }}

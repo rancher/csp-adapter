@@ -14,3 +14,8 @@ global:
   hostNetwork: false
 
 tolerations: []
+
+# include CSP details like below
+#aws:
+#  accountNumber:
+#  roleName:
