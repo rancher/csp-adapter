@@ -7,6 +7,5 @@
 /build
 /dist
 *.swp
-*.txt
 .idea
 .envrc

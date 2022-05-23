@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -8,8 +9,6 @@ import (
 	"github.com/rancher/csp-adapter/pkg/clients/k8s"
 	"github.com/rancher/csp-adapter/pkg/manager"
 	"github.com/rancher/csp-adapter/pkg/metrics"
-	"github.com/rancher/csp-adapter/pkg/server"
-	"github.com/rancher/csp-adapter/pkg/supportconfig"
 	"github.com/rancher/wrangler/pkg/k8scheck"
 	"github.com/rancher/wrangler/pkg/ratelimit"
 	"github.com/rancher/wrangler/pkg/signals"
@@ -24,27 +23,18 @@ var (
 
 func main() {
 	if err := run(); err != nil {
-		logrus.Fatal(err)
+		logrus.Fatalf("csp-adapter failed to run with error: %v", err)
 	}
 }
 
 const (
-	debugEnv           = "CATTLE_DEBUG"
-	rancherHostnameEnv = "RANCHER_HOSTNAME" // this should come from the server-url setting in future
-)
-
-const (
-	csp = "aws" // hardcoded for now, AWS only
+	debugEnv = "CATTLE_DEBUG"
+	awsCSP   = "aws"
 )
 
 func run() error {
 	if os.Getenv(debugEnv) == "true" {
 		logrus.SetLevel(logrus.DebugLevel)
-	}
-
-	rancherHostname := os.Getenv(rancherHostnameEnv)
-	if rancherHostname == "" {
-		return fmt.Errorf("%s must be specified in env", rancherHostnameEnv)
 	}
 
 	logrus.Infof("csp-adapter version %s is starting", fmt.Sprintf("%s (%s)", Version, GitCommit))
@@ -54,7 +44,6 @@ func run() error {
 		return err
 	}
 	cfg.RateLimiter = ratelimit.None
-
 	ctx := signals.SetupSignalContext()
 	err = k8scheck.Wait(ctx, *cfg)
 	if err != nil {
@@ -68,19 +57,23 @@ func run() error {
 
 	awsClient, err := aws.NewClient(ctx)
 	if err != nil {
-		return err
+		registerErr := registerStartupError(k8sClients, createCSPInfo(awsCSP, "unknown"), err)
+		if registerErr != nil {
+			return fmt.Errorf("unable to start or register manager error, start error: %v, register error: %v", err, registerErr)
+		}
+		return fmt.Errorf("failed to start, unable to get hostname: %v", err)
 	}
 
-	generator, err := supportconfig.NewGenerator(csp, awsClient.AccountNumber())
+	hostname, err := k8sClients.GetRancherHostname()
 	if err != nil {
-		return err
+		registerErr := registerStartupError(k8sClients, createCSPInfo(awsCSP, awsClient.AccountNumber()), err)
+		if registerErr != nil {
+			return fmt.Errorf("unable to start or register manager error, start error: %v, register error: %v", err, registerErr)
+		}
+		return fmt.Errorf("failed to start, unable to get hostname: %v", err)
 	}
 
-	if err := server.ListenAndServe(ctx, cfg, k8sClients, generator); err != nil {
-		return err
-	}
-
-	m := manager.NewAWS(awsClient, k8sClients, metrics.NewScraper(rancherHostname, cfg))
+	m := manager.NewAWS(awsClient, k8sClients, metrics.NewScraper(hostname, cfg))
 
 	errs := make(chan error, 1)
 	m.Start(ctx, errs)
@@ -93,4 +86,34 @@ func run() error {
 	<-ctx.Done()
 
 	return nil
+}
+
+// createCSPInfo creates a manager.CSPInfo from a provided csp name and account number
+func createCSPInfo(csp, acctNumber string) manager.CSPInfo {
+	return manager.CSPInfo{
+		Name:       csp,
+		AcctNumber: acctNumber,
+	}
+}
+
+// registerStartupError registers that an error occurred when starting the manager for the cloud account represented by
+// cspInfo if we could start our k8s clients but couldn't init some other part of the manager infra, we need to
+// report this to the user and save the error so it can be included in the supportconfig bundle
+func registerStartupError(clients *k8s.Clients, cspInfo manager.CSPInfo, startupErr error) error {
+	defaultConfig := manager.GetDefaultSupportConfig(clients)
+	defaultConfig.Compliance = manager.ComplianceInfo{
+		Status:  manager.StatusNotInCompliance,
+		Message: fmt.Sprintf("CSP adapter unable to start due to error: %v", startupErr),
+	}
+	defaultConfig.CSP = cspInfo
+	marshalledConfig, err := json.Marshal(defaultConfig)
+	if err != nil {
+		return err
+	}
+	err = clients.UpdateUserNotification(false, "unable to start csp adapter, check adapter logs")
+	if err != nil {
+		return err
+	}
+	err = clients.UpdateCSPConfigOutput(marshalledConfig)
+	return err
 }

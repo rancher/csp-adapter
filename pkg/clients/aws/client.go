@@ -1,14 +1,14 @@
+// Package aws provides a high-level aws client for CSP functionality, including license check-in, checkout, and extension
 package aws
 
 import (
 	"context"
 	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
-	"github.com/aws/aws-sdk-go-v2/credentials/ec2rolecreds"
-	"github.com/aws/aws-sdk-go-v2/feature/ec2/imds"
 	lm "github.com/aws/aws-sdk-go-v2/service/licensemanager"
 	"github.com/aws/aws-sdk-go-v2/service/licensemanager/types"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
@@ -17,11 +17,18 @@ import (
 )
 
 type Client interface {
+	// AccountNumber gets the account number for the AWS account this client will issue calls to
 	AccountNumber() string
-	ListRancherReceivedLicenses(ctx context.Context) ([]types.GrantedLicense, error)
-	CheckoutRancherLicense(ctx context.Context, l types.GrantedLicense) (*lm.CheckoutLicenseOutput, error)
+	// GetRancherLicense returns the license which is for the rancher product sku
+	GetRancherLicense(ctx context.Context) (*types.GrantedLicense, error)
+	// CheckoutRancherLicense checks out the license for entitlementAmt entitlements to RKE_NODE_SUPP
+	CheckoutRancherLicense(ctx context.Context, l types.GrantedLicense, entitlementAmt int) (*lm.CheckoutLicenseOutput, error)
+	// CheckInRancherLicense checks in a license using the provided consumptionToken
 	CheckInRancherLicense(ctx context.Context, consumptionToken string) (*lm.CheckInLicenseOutput, error)
+	// ExtendRancherLicenseConsumptionToken extends the Expiry time of the provided consumptionToken
 	ExtendRancherLicenseConsumptionToken(ctx context.Context, consumptionToken string) (*lm.ExtendLicenseConsumptionOutput, error)
+	// GetNumberOfAvailableEntitlements gets the number of RKE_NODE_SUPP entitlements available on license
+	GetNumberOfAvailableEntitlements(ctx context.Context, license types.GrantedLicense) (int, error)
 }
 
 type client struct {
@@ -31,34 +38,13 @@ type client struct {
 	lm      *lm.Client
 }
 
-func setMetadataService(c *imds.Client) func(o *ec2rolecreds.Options) {
-	return func(o *ec2rolecreds.Options) {
-		o.Client = c
-	}
-}
-
 func NewClient(ctx context.Context) (Client, error) {
-	// initialize instance metadata service and credential provider from imds
-	ms := imds.New(imds.Options{})
-	provider := ec2rolecreds.New(setMetadataService(ms))
-	_, err := provider.Retrieve(ctx)
+	cfg, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	cfg, err := config.LoadDefaultConfig(ctx, config.WithCredentialsProvider(provider))
-	if err != nil {
-		return nil, err
-	}
-
-	// set region
-	res, err := ms.GetRegion(ctx, &imds.GetRegionInput{})
-	if err != nil {
-		return nil, err
-	}
-	cfg.Region = res.Region
-
-	logrus.Debugf("aws config: %+v", cfg)
+	logrus.Debugf("aws config region: %+v", cfg.Region)
 
 	c := &client{
 		cfg: cfg,
@@ -99,15 +85,15 @@ func (c *client) getAccountNumber(ctx context.Context) (string, error) {
 
 var (
 	productSKUField         = "ProductSKU"
-	rancherProductSKU       = "65c5a63f-721f-4a70-b814-3ad8ab52dd8f"
-	maxResults        int32 = 25
+	rancherProductSKU       = "0b87d4fa-d1fe-41d8-830b-67d4ec381549"
+	maxResults        int32 = 1
 )
 
-func (c *client) ListRancherReceivedLicenses(ctx context.Context) ([]types.GrantedLicense, error) {
-	var grantedLicenses []types.GrantedLicense
+func (c *client) GetRancherLicense(ctx context.Context) (*types.GrantedLicense, error) {
+	// per aws engineering, there should only ever be at most one license for a given product sku.
 	input := &lm.ListReceivedLicensesInput{
 		Filters: []types.Filter{
-			types.Filter{
+			{
 				Name:   &productSKUField,
 				Values: []string{rancherProductSKU},
 			},
@@ -120,44 +106,24 @@ func (c *client) ListRancherReceivedLicenses(ctx context.Context) ([]types.Grant
 		return nil, err
 	}
 
-	if len(res.Licenses) > 0 {
-		grantedLicenses = append(grantedLicenses, res.Licenses...)
-	}
-
-	for {
-		if res.NextToken == nil {
-			break
-		}
-
-		input.NextToken = res.NextToken
-		res, err = c.lm.ListReceivedLicenses(ctx, input)
-		if err != nil {
-			return nil, err
-		}
-
-		if len(res.Licenses) > 0 {
-			grantedLicenses = append(grantedLicenses, res.Licenses...)
-		}
-	}
-
-	return grantedLicenses, nil
+	return &res.Licenses[0], nil
 }
 
 var (
 	entitlementDimension = "RKE_NODE_SUPP"
-	checkoutCount        = "1"
 )
 
 const (
 	entitlementUnit = "Count"
 )
 
-func (c *client) CheckoutRancherLicense(ctx context.Context, l types.GrantedLicense) (*lm.CheckoutLicenseOutput, error) {
+func (c *client) CheckoutRancherLicense(ctx context.Context, l types.GrantedLicense, entitlementAmt int) (*lm.CheckoutLicenseOutput, error) {
 	if l.Issuer == nil || l.Issuer.KeyFingerprint == nil {
 		return nil, fmt.Errorf("license %s must have a KeyFingerprint for checkout", *l.LicenseArn)
 	}
 
 	token := uuid.New().String()
+	entitlementStr := fmt.Sprintf("%d", entitlementAmt)
 	res, err := c.lm.CheckoutLicense(ctx, &lm.CheckoutLicenseInput{
 		CheckoutType:   types.CheckoutTypeProvisional,
 		ClientToken:    &token,
@@ -167,7 +133,7 @@ func (c *client) CheckoutRancherLicense(ctx context.Context, l types.GrantedLice
 			{
 				Name:  &entitlementDimension,
 				Unit:  entitlementUnit,
-				Value: &checkoutCount,
+				Value: &entitlementStr,
 			},
 		},
 	})
@@ -192,4 +158,38 @@ func (c *client) ExtendRancherLicenseConsumptionToken(ctx context.Context, consu
 		return nil, err
 	}
 	return res, nil
+}
+
+func (c *client) GetNumberOfAvailableEntitlements(ctx context.Context, license types.GrantedLicense) (int, error) {
+	res, err := c.lm.GetLicenseUsage(ctx, &lm.GetLicenseUsageInput{LicenseArn: license.LicenseArn})
+	if err != nil {
+		// this function can't guarantee availability, so return 0 and an err so the caller can sort this out
+		return 0, err
+	}
+	maxEntitlements, err := getMaxRKEEntitlements(license)
+	if err != nil {
+		// if we can't figure out how many RKE nodes we can support at max, we can't see how many we have left
+		return 0, err
+	}
+	total := 0
+	for _, usage := range res.LicenseUsage.EntitlementUsages {
+		if *usage.Name == entitlementDimension {
+			consumedValue, err := strconv.Atoi(*usage.ConsumedValue)
+			if err != nil {
+				return 0, err
+			}
+			total += consumedValue
+		}
+	}
+	// this should be safe to do - we rely on licenseManager to control if we are/are not allowed to go over
+	return maxEntitlements - total, nil
+}
+
+func getMaxRKEEntitlements(license types.GrantedLicense) (int, error) {
+	for _, entitlement := range license.Entitlements {
+		if *entitlement.Name == entitlementDimension {
+			return int(*entitlement.MaxCount), nil
+		}
+	}
+	return 0, fmt.Errorf("entitlement %s not found on license for %s", entitlementDimension, *license.LicenseArn)
 }
