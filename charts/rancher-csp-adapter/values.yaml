@@ -1,8 +1,5 @@
 debug: true
 
-# remove when discovered from v3.Setting
-rancherHostname: ""
-
 image:
   repository: rancher/rancher-csp-adapter
   tag: latest
@@ -15,7 +12,8 @@ global:
 
 tolerations: []
 
-# include CSP details like below
+# at least one csp must be enabled like below
 #aws:
-#  accountNumber:
-#  roleName:
+#  accountNumber: ""
+#  roleName: ""
+#  enabled: true

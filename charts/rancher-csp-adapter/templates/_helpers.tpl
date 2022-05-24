@@ -29,3 +29,25 @@ server-url
 {{- define "csp-adapter.versionSetting" -}}
 server-version
 {{- end }}
+
+{{- define "csp-adapter.csp" -}}
+{{- if .Values.aws -}}
+    {{- if .Values.aws.enabled -}}
+aws
+    {{- end -}}
+{{- else -}}
+""
+{{- end -}}
+{{- end }}
+
+{{- define "csp-adapter.awsValuesSet" -}}
+{{- if .Values.aws -}}
+    {{- if and .Values.aws.accountNumber .Values.aws.roleName -}}
+    true
+    {{- else -}}
+    false
+    {{- end -}}
+{{- else -}}
+false
+{{- end -}}
+{{- end }}
