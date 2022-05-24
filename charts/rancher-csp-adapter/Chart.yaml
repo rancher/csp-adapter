@@ -6,6 +6,9 @@ appVersion: 999
 annotations:
   catalog.cattle.io/certified: rancher
   catalog.cattle.io/hidden: "true"
-  catalog.cattle.io/namespace: cattle-system
+  catalog.cattle.io/namespace: cattle-csp-system
   catalog.cattle.io/release-name: rancher-csp-adapter
   catalog.cattle.io/os: linux
+  catalog.cattle.io/permits-os: linux
+  catalog.cattle.io/rancher-version: ">= 2.6.6"
+  catalog.cattle.io/kube-version: ">= 1.22.0"
