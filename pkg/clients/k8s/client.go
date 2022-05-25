@@ -22,7 +22,7 @@ import (
 )
 
 const (
-	cspAdapterNamespace = "cattle-csp-system"
+	cspAdapterNamespace = "cattle-csp-adapter-system"
 	cspAdapterSecret    = "K8S_CACHE_SECRET"
 	cspAdapterConfigMap = "K8S_OUTPUT_CONFIGMAP"
 	cspNotification     = "K8S_OUTPUT_NOTIFICATION"
