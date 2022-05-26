@@ -8,7 +8,9 @@ annotations:
   catalog.cattle.io/hidden: "true"
   catalog.cattle.io/namespace: cattle-csp-adapter-system
   catalog.cattle.io/release-name: rancher-csp-adapter
+  catalog.cattle.io/display-name: "Rancher CSP Adapter"
+  catalog.cattle.io/scope: management
   catalog.cattle.io/os: linux
   catalog.cattle.io/permits-os: linux
-  catalog.cattle.io/rancher-version: ">= 2.6.6"
-  catalog.cattle.io/kube-version: ">= 1.22.0"
+  catalog.cattle.io/rancher-version: '>= 2.6.6-0 <= 2.6.99-0'
+  catalog.cattle.io/kube-version: '>= 1.22.0'
