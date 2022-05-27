@@ -8,12 +8,11 @@ image:
 global:
   cattle:
     systemDefaultRegistry: ""
-  hostNetwork: false
 
 tolerations: []
 
 # at least one csp must be enabled like below
-#aws:
-#  accountNumber: ""
-#  roleName: ""
-#  enabled: true
+aws:
+  enabled: false
+  accountNumber: ""
+  roleName: ""
