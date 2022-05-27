@@ -13,6 +13,6 @@ tolerations: []
 
 # at least one csp must be enabled like below
 aws:
- enabled: false
- accountNumber: ""
- roleName: ""
+  enabled: false
+  accountNumber: ""
+  roleName: ""
