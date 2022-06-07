@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"math"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/rancher/csp-adapter/pkg/clients/aws"
@@ -39,10 +40,11 @@ const (
 	// same as RFC3339 from time.time without the Z7:00 indicating timezone. Some AWS timestamps have this format
 	rfc3339NoTZ = "2006-01-02T15:04:05"
 	// keys for the consumption token secret's data. Can't do a straight marshal because we need all values to be strings
-	tokenKey  = "consumptionToken"
-	nodeKey   = "entitledNodes"
-	expiryKey = "expiry"
-	awsCSP    = "aws"
+	tokenKey     = "consumptionToken"
+	nodeKey      = "entitledNodes"
+	expiryKey    = "expiry"
+	awsCSP       = "aws"
+	statusPrefix = "AWS Marketplace Adapter:"
 )
 
 type licenseCheckoutInfo struct {
@@ -55,7 +57,8 @@ func (m *AWS) start(ctx context.Context, errs chan<- error) {
 	for range ticker(ctx, managerInterval) {
 		err := m.runComplianceCheck(ctx)
 		if err != nil {
-			updError := m.updateAdapterOutput(false, fmt.Sprintf("unable to run compliance check with error: %v", err), "unable to run adapter, check adapter logs")
+			updError := m.updateAdapterOutput(false, fmt.Sprintf("unable to run compliance check with error: %v", err),
+				fmt.Sprintf("%s Unable to run the adapter, please check the adapter logs", statusPrefix))
 			if updError != nil {
 				errs <- err
 			}
@@ -72,7 +75,6 @@ func (m *AWS) start(ctx context.Context, errs chan<- error) {
 func (m *AWS) runComplianceCheck(ctx context.Context) error {
 	license, err := m.aws.GetRancherLicense(ctx)
 	if err != nil {
-		// TODO: No license is an error state
 		return fmt.Errorf("unable to get rancher license, err: %v", err)
 	}
 	nodeCounts, err := m.scraper.ScrapeAndParse()
@@ -116,14 +118,17 @@ func (m *AWS) runComplianceCheck(ctx context.Context) error {
 			// only checkout what we actually have available to us
 			checkoutAmount = availableLicenses
 		}
-		resp, err := m.aws.CheckoutRancherLicense(ctx, *license, checkoutAmount)
-		if err != nil {
-			return fmt.Errorf("unable to checkout rancher licenses %v", err)
+		if checkoutAmount > 0 {
+			// it's possible that we have no licenses available - don't attempt checkout in this case
+			resp, err := m.aws.CheckoutRancherLicense(ctx, *license, checkoutAmount)
+			if err != nil {
+				return fmt.Errorf("unable to checkout rancher licenses %v", err)
+			}
+			logrus.Debugf("successfully checked out license")
+			currentCheckoutInfo.ConsumptionToken = *resp.LicenseConsumptionToken
+			currentCheckoutInfo.EntitledLicenses = checkoutAmount
+			currentCheckoutInfo.Expiry = parseExpirationTimestamp(*resp.Expiration)
 		}
-		logrus.Debugf("successfully checked out license")
-		currentCheckoutInfo.ConsumptionToken = *resp.LicenseConsumptionToken
-		currentCheckoutInfo.EntitledLicenses = checkoutAmount
-		currentCheckoutInfo.Expiry = parseExpirationTimestamp(*resp.Expiration)
 	} else {
 		newCheckoutInfo, err := m.extendCheckout(ctx, 5*managerInterval, currentCheckoutInfo)
 		if err != nil {
@@ -141,12 +146,14 @@ func (m *AWS) runComplianceCheck(ctx context.Context) error {
 
 	var statusMessage string
 	if currentCheckoutInfo.EntitledLicenses == requiredLicenses {
-		statusMessage = "Rancher server has the required amount of licenses"
+		statusMessage = fmt.Sprintf("%s Rancher server has the required amount of licenses", statusPrefix)
 	} else {
-		statusMessage = fmt.Sprintf("server is not in compliance, wanted %d, but got %d", requiredLicenses, currentCheckoutInfo.EntitledLicenses)
+		statusMessage = fmt.Sprintf("%s You have exceeded your licensed node count. At least %d more licens(es) are required in %s to become compliant.",
+			statusPrefix, requiredLicenses-currentCheckoutInfo.EntitledLicenses, strings.ToUpper(awsCSP))
 	}
+	configMessage := fmt.Sprintf("Rancher server required %d licens(es) and was able to check out %d licens(es)", requiredLicenses, currentCheckoutInfo.EntitledLicenses)
 
-	return m.updateAdapterOutput(currentCheckoutInfo.EntitledLicenses == requiredLicenses, statusMessage, statusMessage)
+	return m.updateAdapterOutput(currentCheckoutInfo.EntitledLicenses == requiredLicenses, configMessage, statusMessage)
 }
 
 // extendCheckout extends the checkout of the licenses in info if info.Expiry is within minTimeTillExpiry
@@ -206,6 +213,7 @@ func (m *AWS) saveCheckoutInfo(info *licenseCheckoutInfo) error {
 }
 
 // updateAdapterOutput uses the k8s client to update the status objects signaling compliance/non-compliance to other apps
+// configMessage is used to update the supportConfig configmap, and notificationMessage is created in a user-facing object
 func (m *AWS) updateAdapterOutput(inCompliance bool, configMessage string, notificationMessage string) error {
 	config := GetDefaultSupportConfig(m.k8s)
 	config.CSP = CSPInfo{
