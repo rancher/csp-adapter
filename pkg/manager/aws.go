@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"math"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/rancher/csp-adapter/pkg/clients/aws"
@@ -43,7 +42,6 @@ const (
 	tokenKey     = "consumptionToken"
 	nodeKey      = "entitledNodes"
 	expiryKey    = "expiry"
-	awsCSP       = "aws"
 	statusPrefix = "AWS Marketplace Adapter:"
 )
 
@@ -148,8 +146,8 @@ func (m *AWS) runComplianceCheck(ctx context.Context) error {
 	if currentCheckoutInfo.EntitledLicenses == requiredLicenses {
 		statusMessage = fmt.Sprintf("%s Rancher server has the required amount of licenses", statusPrefix)
 	} else {
-		statusMessage = fmt.Sprintf("%s You have exceeded your licensed node count. At least %d more licens(es) are required in %s to become compliant.",
-			statusPrefix, requiredLicenses-currentCheckoutInfo.EntitledLicenses, strings.ToUpper(awsCSP))
+		statusMessage = fmt.Sprintf("%s You have exceeded your licensed node count. At least %d more licens(es) are required in AWS to become compliant.",
+			statusPrefix, requiredLicenses-currentCheckoutInfo.EntitledLicenses)
 	}
 	configMessage := fmt.Sprintf("Rancher server required %d licens(es) and was able to check out %d licens(es)", requiredLicenses, currentCheckoutInfo.EntitledLicenses)
 
@@ -217,7 +215,7 @@ func (m *AWS) saveCheckoutInfo(info *licenseCheckoutInfo) error {
 func (m *AWS) updateAdapterOutput(inCompliance bool, configMessage string, notificationMessage string) error {
 	config := GetDefaultSupportConfig(m.k8s)
 	config.CSP = CSPInfo{
-		Name:       awsCSP,
+		Name:       awsSupportConfigCSP,
 		AcctNumber: m.aws.AccountNumber(),
 	}
 	rancherVersion, err := m.k8s.GetRancherVersion()

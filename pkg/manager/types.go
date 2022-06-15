@@ -23,6 +23,8 @@ const (
 	StatusInCompliance    = "Compliant"
 	StatusNotInCompliance = "NonCompliant"
 	defaultPlatform       = "x86_64"
+	// SUSE support config reads EC2 as being for AWS, we want to use the same syntax to be consistent
+	awsSupportConfigCSP = "EC2"
 )
 
 type ComplianceInfo struct {
