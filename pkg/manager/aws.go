@@ -146,10 +146,10 @@ func (m *AWS) runComplianceCheck(ctx context.Context) error {
 	if currentCheckoutInfo.EntitledLicenses == requiredLicenses {
 		statusMessage = fmt.Sprintf("%s Rancher server has the required amount of licenses", statusPrefix)
 	} else {
-		statusMessage = fmt.Sprintf("%s You have exceeded your licensed node count. At least %d more licens(es) are required in AWS to become compliant.",
+		statusMessage = fmt.Sprintf("%s You have exceeded your licensed node count. At least %d more license(s) are required in AWS to become compliant.",
 			statusPrefix, requiredLicenses-currentCheckoutInfo.EntitledLicenses)
 	}
-	configMessage := fmt.Sprintf("Rancher server required %d licens(es) and was able to check out %d licens(es)", requiredLicenses, currentCheckoutInfo.EntitledLicenses)
+	configMessage := fmt.Sprintf("Rancher server required %d license(s) and was able to check out %d license(s)", requiredLicenses, currentCheckoutInfo.EntitledLicenses)
 
 	return m.updateAdapterOutput(currentCheckoutInfo.EntitledLicenses == requiredLicenses, configMessage, statusMessage)
 }

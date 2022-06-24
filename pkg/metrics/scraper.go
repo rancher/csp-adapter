@@ -1,7 +1,6 @@
 package metrics
 
 import (
-	"crypto/tls"
 	"fmt"
 	"net/http"
 	"strings"
@@ -22,14 +21,9 @@ type scraper struct {
 }
 
 func NewScraper(rancherHost string, cfg *rest.Config) Scraper {
-	tr := &http.Transport{
-		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: true,
-		},
-	}
 	return &scraper{
 		metricsURL: strings.Join([]string{"https://", rancherHost, "/metrics"}, ""),
-		cli:        &http.Client{Transport: tr},
+		cli:        &http.Client{},
 		cfg:        cfg,
 	}
 }
