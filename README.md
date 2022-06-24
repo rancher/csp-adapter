@@ -12,9 +12,49 @@ The CSP adapter also produces a configmap with Cloud provider specific informati
 can be used by rancher to produce a supportconfig (tar which can be given to support).
 
 ## Installation
-NOTE: The CSP adapter requires rancher to be installed before use (rancher provides node metrics and other important features).
 
-TODO
+Full installation steps can be found in the rancher docs.
+
+This chart requires:
+
+- Rancher version 2.6.6 or higher
+- Rancher is installed on an EKS cluster
+- An IAM role has been configured according to the auth section of the readme and these docs
+- Any private certs have been provided as described in these docs
+
+### Certificate Setup
+
+The adapter communicates with rancher to get accurate node counts. This communication requires that the adapter trusts rancher's certificate.
+
+The adapter supports 2 certificate setups: standard and private.
+
+#### Standard Certificate Setup
+
+If rancher is using a certificate provided by a trusted Certificate Authority (i.e. letsEncrypt) no additional setup is needed.
+
+#### Private Certificate Setup
+
+If rancher is using a self-generated certificate or a certificate signed by a private certificate authority, you will need to provide this certificate for the adapter.
+
+First, extract the certificate into a file called `ca-additional.pem`. If you are using the rancher generated certs option, you can use the below command:
+
+```bash
+kubectl get secret tls-rancher -n cattle-system -o jsonpath="{.data.tls\.crt}" | base64 -d  >> ca-additional.pem
+```
+
+Then, create the secret in the adapter namespace:
+
+```bash
+kubectl -n cattle-csp-adapter-system create secret generic tls-ca-additional --from-file=ca-additional.pem
+```
+
+As this certificate is rotated, you will need to replace the cert following the steps above, and then restart the adapter deployment, like below:
+
+```bash
+kubectl rollout restart deploy/rancher-csp-adapter -n cattle-csp-adapter-system
+```
+
+You can also use tools like certmanager's [trust operator](https://cert-manager.io/docs/projects/trust/) to automate this rotation. Keep in mind that this is not a supported option.
 
 ## CSP Background info 
 

@@ -11,6 +11,10 @@ global:
 
 tolerations: []
 
+# if rancher is using a privateCA, this certificate must be provided as a secret in the adapter's namespace - see the
+# readme/docs for more details
+#additionalTrustedCAs: true
+
 # at least one csp must be enabled like below
 aws:
   enabled: false
