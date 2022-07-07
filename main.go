@@ -61,7 +61,7 @@ func run() error {
 		if registerErr != nil {
 			return fmt.Errorf("unable to start or register manager error, start error: %v, register error: %v", err, registerErr)
 		}
-		return fmt.Errorf("failed to start, unable to get hostname: %v", err)
+		return fmt.Errorf("failed to start, unable to start aws client: %v", err)
 	}
 
 	hostname, err := k8sClients.GetRancherHostname()
@@ -110,7 +110,7 @@ func registerStartupError(clients *k8s.Clients, cspInfo manager.CSPInfo, startup
 	if err != nil {
 		return err
 	}
-	err = clients.UpdateUserNotification(false, "unable to start csp adapter, check adapter logs")
+	err = clients.UpdateUserNotification(false, "Marketplace Adapter: unable to start csp adapter, check adapter logs")
 	if err != nil {
 		return err
 	}
