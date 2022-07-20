@@ -2,6 +2,7 @@ package manager
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/rancher/csp-adapter/pkg/clients/k8s"
 )
@@ -47,5 +48,7 @@ func GetDefaultSupportConfig(client k8s.Client) CSPSupportConfig {
 }
 
 func createProductString(rancherVersion string) string {
-	return fmt.Sprintf("cpe:/o:suse:rancher:%s", rancherVersion)
+	// rancher version that comes from k8s is prefixed with a v, but suse lists the product version without a v
+	productVersion := strings.TrimPrefix(rancherVersion, "v")
+	return fmt.Sprintf("cpe:/o:suse:rancher:%s", productVersion)
 }
