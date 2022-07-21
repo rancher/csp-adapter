@@ -9,15 +9,13 @@ import (
 
 	"github.com/rancher/lasso/pkg/controller"
 	v3 "github.com/rancher/rancher/pkg/apis/management.cattle.io/v3"
-	"github.com/rancher/rancher/pkg/generated/controllers/management.cattle.io"
-	mgmtv3 "github.com/rancher/rancher/pkg/generated/controllers/management.cattle.io/v3"
 	"github.com/rancher/wrangler/pkg/clients"
 	v1 "github.com/rancher/wrangler/pkg/generated/controllers/core/v1"
-	"github.com/rancher/wrangler/pkg/generic"
 	corev1 "k8s.io/api/core/v1"
 	apierror "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/rest"
 )
 
@@ -58,8 +56,8 @@ type Client interface {
 type Clients struct {
 	ConfigMaps    v1.ConfigMapClient
 	Secrets       v1.SecretController
-	Notifications mgmtv3.RancherUserNotificationClient
-	Settings      mgmtv3.SettingClient
+	Notifications controller.SharedController
+	Settings      controller.SharedController
 }
 
 func New(ctx context.Context, rest *rest.Config) (*Clients, error) {
@@ -88,19 +86,27 @@ func New(ctx context.Context, rest *rest.Config) (*Clients, error) {
 	if err != nil {
 		return nil, err
 	}
-	opts := &generic.FactoryOptions{
-		SharedControllerFactory: factory,
-	}
-	mgmt, err := management.NewFactoryFromConfigWithOptions(rest, opts)
+	settingGVR := schema.GroupVersionResource{Group: "management.cattle.io", Version: "v3", Resource: "settings"}
+	settingKind := "Setting"
+	settingController := factory.ForResourceKind(settingGVR, settingKind, false)
+	err = settingController.Start(context.Background(), 1)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error when starting setting controller %w", err)
+	}
+
+	notificationGVR := schema.GroupVersionResource{Group: "management.cattle.io", Version: "v3", Resource: "rancherusernotifications"}
+	notificationKind := "RancherUserNotification"
+	notificationController := factory.ForResourceKind(notificationGVR, notificationKind, false)
+	err = notificationController.Start(context.Background(), 1)
+	if err != nil {
+		return nil, fmt.Errorf("error when starting notification controller %w", err)
 	}
 
 	return &Clients{
 		ConfigMaps:    clients.Core.ConfigMap(),
 		Secrets:       clients.Core.Secret(),
-		Notifications: mgmt.Management().V3().RancherUserNotification(),
-		Settings:      mgmt.Management().V3().Setting(),
+		Notifications: notificationController,
+		Settings:      settingController,
 	}, nil
 }
 
@@ -184,23 +190,25 @@ func (c *Clients) UpdateCSPConfigOutput(marshalledData []byte) error {
 func (c *Clients) UpdateUserNotification(isInCompliance bool, message string) error {
 	if isInCompliance {
 		// if we are in compliance, remove any existing notification
-		err := c.Notifications.Delete(outputNotificationName, &metav1.DeleteOptions{})
+		err := c.Notifications.Client().Delete(context.TODO(), "", outputNotificationName, metav1.DeleteOptions{})
 		if err != nil && !apierror.IsNotFound(err) {
 			// ignore not found errors - this means we didn't have a notification to delete, so we didn't need to adjust
 			return err
 		}
 	} else {
-		current, err := c.Notifications.Get(outputNotificationName, metav1.GetOptions{})
+		current := &v3.RancherUserNotification{}
+		err := c.Notifications.Client().Get(context.TODO(), "", outputNotificationName, current, metav1.GetOptions{})
 		if err != nil {
 			if apierror.IsNotFound(err) {
 				// not found means we need to make a new notification
-				_, err = c.Notifications.Create(&v3.RancherUserNotification{
+				current = &v3.RancherUserNotification{
 					ObjectMeta: metav1.ObjectMeta{
 						Name: outputNotificationName,
 					},
 					ComponentName: cspComponentName,
 					Message:       message,
-				})
+				}
+				err = c.Notifications.Client().Create(context.TODO(), "", current, current, metav1.CreateOptions{})
 			}
 			return err
 		}
@@ -208,7 +216,7 @@ func (c *Clients) UpdateUserNotification(isInCompliance bool, message string) er
 		current = current.DeepCopy()
 		current.Message = message
 		current.ComponentName = cspComponentName
-		_, err = c.Notifications.Update(current)
+		err = c.Notifications.Client().Update(context.TODO(), "", current, current, metav1.UpdateOptions{})
 		if err != nil {
 			return err
 		}
@@ -217,7 +225,8 @@ func (c *Clients) UpdateUserNotification(isInCompliance bool, message string) er
 }
 
 func (c *Clients) GetRancherHostname() (string, error) {
-	setting, err := c.Settings.Get(hostnameSetting, metav1.GetOptions{})
+	setting := &v3.Setting{}
+	err := c.Settings.Client().Get(context.TODO(), "", hostnameSetting, setting, metav1.GetOptions{})
 	if err != nil {
 		return "", err
 	}
@@ -227,7 +236,8 @@ func (c *Clients) GetRancherHostname() (string, error) {
 }
 
 func (c *Clients) GetRancherVersion() (string, error) {
-	setting, err := c.Settings.Get(versionSetting, metav1.GetOptions{})
+	setting := &v3.Setting{}
+	err := c.Settings.Client().Get(context.TODO(), "", versionSetting, setting, metav1.GetOptions{})
 	if err != nil {
 		return "", err
 	}
