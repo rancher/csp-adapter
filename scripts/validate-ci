@@ -9,7 +9,7 @@ echo Running: go generate
 go generate
 
 echo Running: go mod tidy
-go mod tidy
+go mod tidy -compat=1.17
 
 echo Running: go mod verify
 go mod verify

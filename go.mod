@@ -3,9 +3,7 @@ module github.com/rancher/csp-adapter
 go 1.17
 
 replace (
-	github.com/rancher/rancher => github.com/rancher/rancher v0.0.0-20220519154712-0e2fdc8060bc
 	github.com/rancher/rancher/pkg/apis => github.com/rancher/rancher/pkg/apis v0.0.0-20220519154712-0e2fdc8060bc
-	github.com/rancher/rancher/pkg/client => github.com/rancher/rancher/pkg/client v0.0.0-20220519154712-0e2fdc8060bc
 	k8s.io/api => k8s.io/api v0.19.0
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.19.0
 	k8s.io/apimachinery => github.com/rancher/apimachinery v0.19.0-rancher1
@@ -38,7 +36,6 @@ require (
 	github.com/google/uuid v1.2.0
 	github.com/prometheus/common v0.32.1
 	github.com/rancher/lasso v0.0.0-20220412224715-5f3517291ad4
-	github.com/rancher/rancher v0.0.0-20220309231411-e4af2465c5b4
 	github.com/rancher/rancher/pkg/apis v0.0.0
 	github.com/rancher/wrangler v0.8.11-0.20220411195911-c2b951ab3480
 	github.com/sirupsen/logrus v1.8.1
@@ -75,6 +72,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
+	github.com/onsi/gomega v1.10.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.12.1 // indirect
