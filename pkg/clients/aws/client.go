@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	lm "github.com/aws/aws-sdk-go-v2/service/licensemanager"
 	"github.com/aws/aws-sdk-go-v2/service/licensemanager/types"
@@ -30,12 +29,22 @@ type Client interface {
 	// GetNumberOfAvailableEntitlements gets the number of RKE_NODE_SUPP entitlements available on license
 	GetNumberOfAvailableEntitlements(ctx context.Context, license types.GrantedLicense) (int, error)
 }
+type licenseManagerClient interface {
+	ListReceivedLicenses(ctx context.Context, params *lm.ListReceivedLicensesInput, optFns ...func(*lm.Options)) (*lm.ListReceivedLicensesOutput, error)
+	CheckoutLicense(ctx context.Context, params *lm.CheckoutLicenseInput, optFns ...func(*lm.Options)) (*lm.CheckoutLicenseOutput, error)
+	CheckInLicense(ctx context.Context, params *lm.CheckInLicenseInput, optFns ...func(*lm.Options)) (*lm.CheckInLicenseOutput, error)
+	ExtendLicenseConsumption(ctx context.Context, params *lm.ExtendLicenseConsumptionInput, optFns ...func(*lm.Options)) (*lm.ExtendLicenseConsumptionOutput, error)
+	GetLicenseUsage(ctx context.Context, params *lm.GetLicenseUsageInput, optFns ...func(*lm.Options)) (*lm.GetLicenseUsageOutput, error)
+}
+
+type stsClient interface {
+	GetCallerIdentity(ctx context.Context, params *sts.GetCallerIdentityInput, optFns ...func(*sts.Options)) (*sts.GetCallerIdentityOutput, error)
+}
 
 type client struct {
 	acctNum string
-	cfg     aws.Config
-	sts     *sts.Client
-	lm      *lm.Client
+	sts     stsClient
+	lm      licenseManagerClient
 }
 
 func NewClient(ctx context.Context) (Client, error) {
@@ -47,7 +56,6 @@ func NewClient(ctx context.Context) (Client, error) {
 	logrus.Debugf("aws config region: %+v", cfg.Region)
 
 	c := &client{
-		cfg: cfg,
 		sts: sts.NewFromConfig(cfg),
 		lm:  lm.NewFromConfig(cfg),
 	}
@@ -84,18 +92,32 @@ func (c *client) getAccountNumber(ctx context.Context) (string, error) {
 }
 
 var (
-	productSKUField         = "ProductSKU"
-	rancherProductSKU       = "0b87d4fa-d1fe-41d8-830b-67d4ec381549"
-	maxResults        int32 = 1
+	productSKUField                = "ProductSKU"
+	rancherProductSKUNonEmea       = "0b87d4fa-d1fe-41d8-830b-67d4ec381549"
+	rancherProductSKUEmea          = "a303097d-1dc2-4548-8ea6-f46bb9842e21"
+	maxResults               int32 = 1
 )
 
 func (c *client) GetRancherLicense(ctx context.Context) (*types.GrantedLicense, error) {
+	license, err := c.getLicenseForProductID(ctx, rancherProductSKUNonEmea)
+	if err != nil {
+		// if we could not get the original license, attempt to retrieve the license for Emea countries
+		license, newErr := c.getLicenseForProductID(ctx, rancherProductSKUEmea)
+		if newErr != nil {
+			return nil, fmt.Errorf("unable to get license for non-emea: %s, unable to get license for emea: %s", err.Error(), newErr.Error())
+		}
+		return license, nil
+	}
+	return license, nil
+}
+
+func (c *client) getLicenseForProductID(ctx context.Context, productID string) (*types.GrantedLicense, error) {
 	// per aws engineering, there should only ever be at most one license for a given product sku.
 	input := &lm.ListReceivedLicensesInput{
 		Filters: []types.Filter{
 			{
 				Name:   &productSKUField,
-				Values: []string{rancherProductSKU},
+				Values: []string{productID},
 			},
 		},
 		MaxResults: &maxResults,
@@ -106,7 +128,17 @@ func (c *client) GetRancherLicense(ctx context.Context) (*types.GrantedLicense, 
 		return nil, err
 	}
 
-	return &res.Licenses[0], nil
+	if len(res.Licenses) == 0 {
+		return nil, fmt.Errorf("unable to find license for product id %s", productID)
+	}
+
+	license := &res.Licenses[0]
+	if license.ProductSKU == nil {
+		// we expect this value to be set, but given that the value is a pointer we can't be sure
+		license.ProductSKU = &productID
+	}
+
+	return license, nil
 }
 
 var (
@@ -119,6 +151,9 @@ const (
 
 func (c *client) CheckoutRancherLicense(ctx context.Context, l types.GrantedLicense, entitlementAmt int) (*lm.CheckoutLicenseOutput, error) {
 	if l.Issuer == nil || l.Issuer.KeyFingerprint == nil {
+		if l.LicenseArn == nil {
+			return nil, fmt.Errorf("license is missing arn and KeyFingerprint/Issuer")
+		}
 		return nil, fmt.Errorf("license %s must have a KeyFingerprint for checkout", *l.LicenseArn)
 	}
 
@@ -127,7 +162,7 @@ func (c *client) CheckoutRancherLicense(ctx context.Context, l types.GrantedLice
 	res, err := c.lm.CheckoutLicense(ctx, &lm.CheckoutLicenseInput{
 		CheckoutType:   types.CheckoutTypeProvisional,
 		ClientToken:    &token,
-		ProductSKU:     &rancherProductSKU,
+		ProductSKU:     l.ProductSKU,
 		KeyFingerprint: l.Issuer.KeyFingerprint,
 		Entitlements: []types.EntitlementData{
 			{
