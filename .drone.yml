@@ -198,7 +198,7 @@ steps:
     - tag
 
 - name: aws-manifest
-  image: plugins/ecr
+  image: registry.suse.com/bci/bci-base:latest
   environment:
     AWS_REGISTRY_ID:
       from_secret: aws_registry_id
@@ -208,6 +208,7 @@ steps:
       from_secret: ecr_secret_key
     AWS_REGION: "us-east-1"
   commands:
+  - "zypper in -y aws-cli docker"
   - "aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_REGISTRY_ID"
   - "docker manifest create $AWS_REGISTRY_ID/suse/rancher/rancher-csp-adapter:${DRONE_TAG} $AWS_REGISTRY_ID/suse/rancher/rancher-csp-adapter:${DRONE_TAG}-arm64 $AWS_REGISTRY_ID/suse/rancher/rancher-csp-adapter:${DRONE_TAG}-amd64"
   - "docker manifest push $AWS_REGISTRY_ID/suse/rancher/rancher-csp-adapter:${DRONE_TAG}"
