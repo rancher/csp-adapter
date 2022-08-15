@@ -74,7 +74,23 @@ steps:
     registry:
       from_secret: aws_registry_id
     repo: suse/rancher/rancher-csp-adapter
-    tag: "${DRONE_TAG}-amd64"
+    tag: "${DRONE_TAG}"
+  when:
+    event:
+    - tag
+
+- name: ecr-publish-eu
+  image: plugins/ecr
+  settings:
+    dockerfile: package/Dockerfile
+    access_key:
+      from_secret: ecr_access_key_eu
+    secret_key:
+      from_secret: ecr_secret_key_eu
+    registry:
+      from_secret: aws_registry_id_eu
+    repo: suse/rancher/rancher-csp-adapter-eu
+    tag: "${DRONE_TAG}"
   when:
     event:
     - tag
@@ -125,20 +141,6 @@ steps:
     event:
       - tag
 
-- name: docker-publish
-  image: plugins/docker
-  settings:
-    dockerfile: package/Dockerfile
-    username:
-      from_secret: docker_username
-    password:
-      from_secret: docker_password
-    repo: "rancher/rancher-csp-adapter"
-    tag: "${DRONE_TAG}-arm64"
-  when:
-    event:
-    - tag
-
 - name: docker-build
   image: plugins/docker
   settings:
@@ -150,17 +152,15 @@ steps:
     event:
     - pull_request
 
-- name: ecr-publish
-  image: plugins/ecr
+- name: docker-publish
+  image: plugins/docker
   settings:
     dockerfile: package/Dockerfile
-    access_key:
-      from_secret: ecr_access_key
-    secret_key:
-      from_secret: ecr_secret_key
-    registry:
-      from_secret: aws_registry_id
-    repo: suse/rancher/rancher-csp-adapter
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    repo: "rancher/rancher-csp-adapter"
     tag: "${DRONE_TAG}-arm64"
   when:
     event:
@@ -193,25 +193,6 @@ steps:
     - linux/arm64
     target: "rancher/rancher-csp-adapter:${DRONE_TAG}"
     template: "rancher/rancher-csp-adapter:${DRONE_TAG}-ARCH"
-  when:
-    event:
-    - tag
-
-- name: aws-manifest
-  image: registry.suse.com/bci/bci-base:latest
-  environment:
-    AWS_REGISTRY_ID:
-      from_secret: aws_registry_id
-    AWS_ACCESS_KEY_ID:
-      from_secret: ecr_access_key
-    AWS_SECRET_ACCESS_KEY:
-      from_secret: ecr_secret_key
-    AWS_REGION: "us-east-1"
-  commands:
-  - "zypper in -y aws-cli docker"
-  - "aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_REGISTRY_ID"
-  - "docker manifest create $AWS_REGISTRY_ID/suse/rancher/rancher-csp-adapter:${DRONE_TAG} $AWS_REGISTRY_ID/suse/rancher/rancher-csp-adapter:${DRONE_TAG}-arm64 $AWS_REGISTRY_ID/suse/rancher/rancher-csp-adapter:${DRONE_TAG}-amd64"
-  - "docker manifest push $AWS_REGISTRY_ID/suse/rancher/rancher-csp-adapter:${DRONE_TAG}"
   when:
     event:
     - tag
