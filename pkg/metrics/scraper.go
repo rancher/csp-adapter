@@ -5,7 +5,9 @@ import (
 	"net/http"
 	"strings"
 
+	prometheusClient "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
+	"github.com/sirupsen/logrus"
 	"k8s.io/client-go/rest"
 )
 
@@ -30,6 +32,8 @@ func NewScraper(rancherHost string, cfg *rest.Config) Scraper {
 
 const (
 	nodeGaugeMetricName = "cluster_manager_nodes"
+	clusterNameLabel    = "cluster_id"
+	localClusterID      = "local"
 )
 
 type NodeCounts struct {
@@ -66,10 +70,29 @@ func (s *scraper) ScrapeAndParse() (*NodeCounts, error) {
 
 	var nodeCount int
 	for _, metric := range nodeMetricFamily.GetMetric() {
-		nodeCount += int(metric.GetGauge().GetValue())
+		isMetricForLocal, err := isMetricForLocalCluster(metric)
+		clusterNodeCount := int(metric.GetGauge().GetValue())
+		logrus.Debugf("scraper found nodes: %d, isMetricForLocal: %t, err: %v", clusterNodeCount, isMetricForLocal, err)
+		if err != nil {
+			logrus.Warnf("error when attempting to determine if count was for local cluster: %s, will not include %d nodes in total", err.Error(), clusterNodeCount)
+			continue
+		}
+		if !isMetricForLocal {
+			nodeCount += clusterNodeCount
+		}
+
 	}
 
 	return &NodeCounts{
 		Total: nodeCount,
 	}, nil
+}
+
+func isMetricForLocalCluster(metric *prometheusClient.Metric) (bool, error) {
+	for _, label := range metric.GetLabel() {
+		if label.Name != nil && *label.Name == clusterNameLabel {
+			return label.Value != nil && *label.Value == localClusterID, nil
+		}
+	}
+	return false, fmt.Errorf("unable to determine if metric is for local cluster due to missing label")
 }
