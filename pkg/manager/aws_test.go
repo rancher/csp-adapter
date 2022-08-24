@@ -113,6 +113,17 @@ func TestCheckout(t *testing.T) {
 				cachedToken:         true,
 			},
 		},
+		{
+			numRancherNodes:     0,
+			numAWSEntitlements:  1,
+			currentEntitlements: 0,
+			result: testResult{
+				errResult:           false,
+				inCompliance:        true,
+				numUsedEntitlements: 0,
+				cachedToken:         false,
+			},
+		},
 	}
 	for _, scenario := range scenarios {
 		scenario.runScenario(t)
@@ -153,6 +164,17 @@ func TestCheckInCheckout(t *testing.T) {
 				inCompliance:        true,
 				numUsedEntitlements: 1,
 				cachedToken:         true,
+			},
+		},
+		{
+			numRancherNodes:     0,
+			numAWSEntitlements:  1,
+			currentEntitlements: 1,
+			result: testResult{
+				errResult:           false,
+				inCompliance:        true,
+				numUsedEntitlements: 0,
+				cachedToken:         false,
 			},
 		},
 	}

@@ -35,6 +35,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/licensemanager v1.15.3
 	github.com/aws/aws-sdk-go-v2/service/sts v1.16.3
 	github.com/google/uuid v1.2.0
+	github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/common v0.32.1
 	github.com/rancher/lasso v0.0.0-20220412224715-5f3517291ad4
 	github.com/rancher/rancher v0.0.0-20220309231411-e4af2465c5b4
@@ -78,7 +79,6 @@ require (
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.12.1 // indirect
-	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/rancher/aks-operator v1.0.5 // indirect
 	github.com/rancher/eks-operator v1.1.3 // indirect

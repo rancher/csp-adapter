@@ -127,7 +127,8 @@ func (m *AWS) runComplianceCheck(ctx context.Context) error {
 			currentCheckoutInfo.EntitledLicenses = checkoutAmount
 			currentCheckoutInfo.Expiry = parseExpirationTimestamp(*resp.Expiration)
 		}
-	} else {
+	} else if requiredLicenses != 0 {
+		// extend our checkout as long as we have something checked out
 		newCheckoutInfo, err := m.extendCheckout(ctx, 5*managerInterval, currentCheckoutInfo)
 		if err != nil {
 			currentCheckoutInfo.EntitledLicenses = 0
