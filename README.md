@@ -105,12 +105,12 @@ You can also use tools like certmanager's [trust operator](https://cert-manager.
 ## Release
 
 1. Check Kubernetes and Rancher version limits in the annotations of this repo's `charts/Chart.yaml`. Change the supported Kubernetes versions (`kube-version` range) if you have added/removed support for a version in the current range. Change the `rancher-version` range only when making a new major version of the csp-adapter.
-2. Update the [rancher-csp-adapter chart](https://github.com/rancher/charts/blob/dev-v2.6/packages/rancher-csp-adapter/package.yaml):
+2. Update the [rancher-csp-adapter chart](https://github.com/rancher/charts/blob/dev-v2.7/packages/rancher-csp-adapter/package.yaml):
     1. Clone this repo (not a fork).
-    2. Pull the `release/v2.6` branch.
-    3. Tag the branch with a new version. For example, to release version `1.1.2`, tag with `git tag v1.1.2` (make sure to include the `v`, it's important for the CI).
+    2. Pull the `release/v2.7` branch.
+    3. Tag the branch with a new version. For example, to release version `2.2.0`, tag with `git tag v2.2.0` (make sure to include the `v`, it's important for the CI).
     4. Push the new tag to the remote: `git push --tags`. Wait for the pipeline to release the new version before moving on to the next step.
-    5. In the charts repo, update the version of the adapter. See the [rancher/charts](https://github.com/rancher/charts/tree/dev-v2.6) repo for instructions on updating the [rancher-csp-adapter chart](https://github.com/rancher/charts/blob/dev-v2.6/packages/rancher-csp-adapter/package.yaml).
-3. Update the value of the `CATTLE_CSP_ADAPTER_MIN_VERSION` environment variable in [Rancher's Dockerfile](https://github.com/rancher/rancher/blob/release/v2.6/package/Dockerfile).
+    5. In the charts repo, update the version of the adapter. See the [rancher/charts](https://github.com/rancher/charts/tree/dev-v2.7) repo for instructions on updating the [rancher-csp-adapter chart](https://github.com/rancher/charts/blob/dev-v2.7/packages/rancher-csp-adapter/package.yaml).
+3. Update the value of the `CATTLE_CSP_ADAPTER_MIN_VERSION` environment variable in [Rancher's Dockerfile](https://github.com/rancher/rancher/blob/release/v2.7/package/Dockerfile).
 4. Update the version compatibility matrix in the main Rancher docs.
 5. Update the AWS Marketplace listing.
