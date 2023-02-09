@@ -56,7 +56,7 @@ kubectl rollout restart deploy/rancher-csp-adapter -n cattle-csp-adapter-system
 
 You can also use tools like certmanager's [trust operator](https://cert-manager.io/docs/projects/trust/) to automate this rotation. Keep in mind that this is not a supported option.
 
-## CSP Background info 
+## CSP Background info
 
 
 ### AWS
