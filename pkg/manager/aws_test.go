@@ -77,7 +77,7 @@ func (s *testScenario) runScenario(t *testing.T) {
 	}
 }
 
-//TestCheckout tests basic scenarios where we don't have anything previously checked out
+// TestCheckout tests basic scenarios where we don't have anything previously checked out
 func TestCheckout(t *testing.T) {
 	scenarios := []testScenario{
 		{
@@ -130,7 +130,7 @@ func TestCheckout(t *testing.T) {
 	}
 }
 
-//TestCheckInCheckout tests scenarios where we already have some items checked out
+// TestCheckInCheckout tests scenarios where we already have some items checked out
 func TestCheckInCheckout(t *testing.T) {
 	scenarios := []testScenario{
 		{
