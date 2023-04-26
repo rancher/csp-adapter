@@ -38,7 +38,7 @@ require (
 	github.com/rancher/lasso v0.0.0-20220412224715-5f3517291ad4
 	github.com/rancher/rancher/pkg/apis v0.0.0
 	github.com/rancher/wrangler v0.8.11-0.20220411195911-c2b951ab3480
-	github.com/sirupsen/logrus v1.8.1
+	github.com/sirupsen/logrus v1.9.0
 	github.com/stretchr/testify v1.8.0
 	k8s.io/api v0.25.4
 	k8s.io/apimachinery v0.25.4
