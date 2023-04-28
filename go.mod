@@ -32,7 +32,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.15.3
 	github.com/aws/aws-sdk-go-v2/service/licensemanager v1.15.3
 	github.com/aws/aws-sdk-go-v2/service/sts v1.16.3
-	github.com/google/uuid v1.2.0
+	github.com/google/uuid v1.3.0
 	github.com/prometheus/client_model v0.4.0
 	github.com/prometheus/common v0.43.0
 	github.com/rancher/lasso v0.0.0-20220412224715-5f3517291ad4
