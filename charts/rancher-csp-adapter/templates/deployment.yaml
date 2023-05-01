@@ -16,6 +16,8 @@ spec:
       - env:
         - name: CATTLE_DEBUG
           value: {{ .Values.debug | quote }}
+        - name: CATTLE_DEV_MODE
+          value: {{ .Values.devMode | quote }}
         - name: K8S_OUTPUT_CONFIGMAP
           value: '{{ template "csp-adapter.outputConfigMap"  }}'
         - name: K8S_OUTPUT_NOTIFICATION
