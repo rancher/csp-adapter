@@ -36,7 +36,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/prometheus/client_model v0.4.0
 	github.com/prometheus/common v0.43.0
-	github.com/rancher/lasso v0.0.0-20220412224715-5f3517291ad4
+	github.com/rancher/lasso v0.0.0-20230502204209-3eb356f3e8cf
 	github.com/rancher/rancher/pkg/apis v0.0.0
 	github.com/rancher/wrangler v0.8.11-0.20220411195911-c2b951ab3480
 	github.com/sirupsen/logrus v1.9.0
