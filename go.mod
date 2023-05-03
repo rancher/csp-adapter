@@ -37,12 +37,12 @@ require (
 	github.com/google/uuid v1.2.0
 	github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/common v0.32.1
-	github.com/rancher/lasso v0.0.0-20220412224715-5f3517291ad4
+	github.com/rancher/lasso v0.0.0-20230502204209-3eb356f3e8cf
 	github.com/rancher/rancher v0.0.0-20220309231411-e4af2465c5b4
 	github.com/rancher/rancher/pkg/apis v0.0.0
 	github.com/rancher/wrangler v0.8.11-0.20220411195911-c2b951ab3480
 	github.com/sirupsen/logrus v1.8.1
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.1
 	k8s.io/api v0.25.4
 	k8s.io/apimachinery v0.25.4
 	k8s.io/client-go v12.0.0+incompatible
