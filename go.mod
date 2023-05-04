@@ -35,7 +35,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/licensemanager v1.15.3
 	github.com/aws/aws-sdk-go-v2/service/sts v1.16.3
 	github.com/google/uuid v1.2.0
-	github.com/prometheus/client_model v0.2.0
+	github.com/prometheus/client_model v0.4.0
 	github.com/prometheus/common v0.32.1
 	github.com/rancher/lasso v0.0.0-20220412224715-5f3517291ad4
 	github.com/rancher/rancher v0.0.0-20220309231411-e4af2465c5b4
@@ -102,7 +102,7 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220210224613-90d013bbcef8 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/protobuf v1.28.0 // indirect
+	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
