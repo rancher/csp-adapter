@@ -42,12 +42,13 @@ type stsClient interface {
 }
 
 type client struct {
-	acctNum string
-	sts     stsClient
-	lm      licenseManagerClient
+	acctNum         string
+	sts             stsClient
+	lm              licenseManagerClient
+	useTestProducts bool
 }
 
-func NewClient(ctx context.Context) (Client, error) {
+func NewClient(ctx context.Context, useTestProducts bool) (Client, error) {
 	cfg, err := config.LoadDefaultConfig(ctx)
 	if err != nil {
 		return nil, err
@@ -66,6 +67,7 @@ func NewClient(ctx context.Context) (Client, error) {
 	}
 
 	c.acctNum = acctNum
+	c.useTestProducts = useTestProducts
 
 	logrus.Debugf("account number: %s", acctNum)
 
@@ -92,23 +94,39 @@ func (c *client) getAccountNumber(ctx context.Context) (string, error) {
 }
 
 var (
-	productSKUField                = "ProductSKU"
-	rancherProductSKUNonEmea       = "0b87d4fa-d1fe-41d8-830b-67d4ec381549"
-	rancherProductSKUEmea          = "a303097d-1dc2-4548-8ea6-f46bb9842e21"
-	maxResults               int32 = 1
+	productSKUField          = "ProductSKU"
+	rancherProductSKUNonEmea = "0b87d4fa-d1fe-41d8-830b-67d4ec381549"
+	rancherProductSKUEmea    = "a303097d-1dc2-4548-8ea6-f46bb9842e21"
+	// test skus - should not be enabled at the same time as prod skus
+	rancherProductTestSKUNonEmea       = "83929a73-7c49-4511-aa45-8854a4f001d4"
+	rancherProductTestSKUEmea          = "e001cf36-9e45-496e-be2c-b48749bf7dd2"
+	maxResults                   int32 = 1
 )
 
 func (c *client) GetRancherLicense(ctx context.Context) (*types.GrantedLicense, error) {
-	license, err := c.getLicenseForProductID(ctx, rancherProductSKUNonEmea)
-	if err != nil {
-		// if we could not get the original license, attempt to retrieve the license for Emea countries
-		license, newErr := c.getLicenseForProductID(ctx, rancherProductSKUEmea)
-		if newErr != nil {
-			return nil, fmt.Errorf("unable to get license for non-emea: %s, unable to get license for emea: %s", err.Error(), newErr.Error())
+	// only attempt to retrieve the Emea licenses if we can't get the standard license
+	productSKUs := []string{rancherProductSKUNonEmea, rancherProductSKUEmea}
+	// test product IDs should only be used specifically when requested
+	if c.useTestProducts {
+		productSKUs = []string{rancherProductTestSKUNonEmea, rancherProductTestSKUEmea}
+	}
+	var errors []error
+	for _, productSKU := range productSKUs {
+		license, err := c.getLicenseForProductID(ctx, productSKU)
+		if err != nil {
+			errors = append(errors, fmt.Errorf("unable to get license for sku %s: %w", productSKU, err))
+			continue
 		}
+		// if we found a valid license, return the first one that we find
 		return license, nil
 	}
-	return license, nil
+	// if we got to this point, then we never found a valid license
+	err := fmt.Errorf("unable to get a valid rancher license")
+	// aggregate all individual errors into one message so we can see each error for each product sku
+	for _, productError := range errors {
+		err = fmt.Errorf("%s, %s", err.Error(), productError.Error())
+	}
+	return nil, err
 }
 
 func (c *client) getLicenseForProductID(ctx context.Context, productID string) (*types.GrantedLicense, error) {

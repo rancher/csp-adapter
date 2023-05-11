@@ -28,8 +28,9 @@ func main() {
 }
 
 const (
-	debugEnv = "CATTLE_DEBUG"
-	awsCSP   = "aws"
+	debugEnv   = "CATTLE_DEBUG"
+	devModeEnv = "CATTLE_DEV_MODE"
+	awsCSP     = "aws"
 )
 
 func run() error {
@@ -55,7 +56,9 @@ func run() error {
 		return err
 	}
 
-	awsClient, err := aws.NewClient(ctx)
+	devMode := os.Getenv(devModeEnv) == "true"
+
+	awsClient, err := aws.NewClient(ctx, devMode)
 	if err != nil {
 		registerErr := registerStartupError(k8sClients, createCSPInfo(awsCSP, "unknown"), err)
 		if registerErr != nil {
