@@ -38,7 +38,7 @@ require (
 	github.com/prometheus/common v0.43.0
 	github.com/rancher/lasso v0.0.0-20230502204209-3eb356f3e8cf
 	github.com/rancher/rancher/pkg/apis v0.0.0
-	github.com/rancher/wrangler v0.8.11
+	github.com/rancher/wrangler v1.1.1
 	github.com/sirupsen/logrus v1.9.0
 	github.com/stretchr/testify v1.8.2
 	k8s.io/api v0.26.4
@@ -103,14 +103,14 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/apiextensions-apiserver v0.23.1 // indirect
+	k8s.io/apiextensions-apiserver v0.25.4 // indirect
 	k8s.io/apiserver v0.26.4 // indirect
 	k8s.io/klog v1.0.0 // indirect
 	k8s.io/klog/v2 v2.80.1 // indirect
-	k8s.io/kube-aggregator v0.21.0 // indirect
+	k8s.io/kube-aggregator v0.25.4 // indirect
 	k8s.io/kube-openapi v0.0.0-20221012153701-172d655c2280 // indirect
 	k8s.io/utils v0.0.0-20221107191617-1a15be271d1d // indirect
-	sigs.k8s.io/cli-utils v0.16.0 // indirect
+	sigs.k8s.io/cli-utils v0.27.0 // indirect
 	sigs.k8s.io/json v0.0.0-20220713155537-f223a00ba0e2 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
