@@ -9,9 +9,9 @@ import (
 	"github.com/rancher/csp-adapter/pkg/clients/k8s"
 	"github.com/rancher/csp-adapter/pkg/manager"
 	"github.com/rancher/csp-adapter/pkg/metrics"
-	"github.com/rancher/wrangler/pkg/k8scheck"
-	"github.com/rancher/wrangler/pkg/ratelimit"
-	"github.com/rancher/wrangler/pkg/signals"
+	"github.com/rancher/wrangler/v2/pkg/k8scheck"
+	"github.com/rancher/wrangler/v2/pkg/ratelimit"
+	"github.com/rancher/wrangler/v2/pkg/signals"
 	"github.com/sirupsen/logrus"
 	"k8s.io/client-go/rest"
 )
