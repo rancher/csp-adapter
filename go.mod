@@ -3,7 +3,7 @@ module github.com/rancher/csp-adapter
 go 1.20
 
 replace (
-	github.com/rancher/rancher/pkg/apis => github.com/rancher/rancher/pkg/apis v0.0.0-20220519154712-0e2fdc8060bc
+	github.com/rancher/rancher/pkg/apis => github.com/rancher/rancher/pkg/apis v2.8.3
 	github.com/rancher/rancher/pkg/client => github.com/rancher/rancher/pkg/client v0.0.0-20220519154712-0e2fdc8060bc
 	k8s.io/api => k8s.io/api v0.27.4
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.27.4
@@ -37,7 +37,7 @@ require (
 	github.com/prometheus/client_model v0.4.0
 	github.com/prometheus/common v0.43.0
 	github.com/rancher/lasso v0.0.0-20230830164424-d684fdeb6f29
-	github.com/rancher/rancher/pkg/apis v0.0.0
+	github.com/rancher/rancher/pkg/apis v2.8.3
 	github.com/rancher/wrangler v0.8.11
 	github.com/sirupsen/logrus v1.9.0
 	github.com/stretchr/testify v1.8.4
