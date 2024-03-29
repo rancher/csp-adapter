@@ -4,7 +4,7 @@ go 1.20
 
 replace (
 	github.com/rancher/rancher/pkg/apis => github.com/rancher/rancher/pkg/apis v0.0.0-20220519154712-0e2fdc8060bc
-	github.com/rancher/rancher/pkg/client => github.com/rancher/rancher/pkg/client v0.0.0-20220519154712-0e2fdc8060bc
+	github.com/rancher/rancher/pkg/client => github.com/rancher/rancher/pkg/client v2.8.3
 	k8s.io/api => k8s.io/api v0.27.4
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.27.4
 	k8s.io/apimachinery => k8s.io/apimachinery v0.27.4
