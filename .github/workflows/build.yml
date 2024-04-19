@@ -1,0 +1,41 @@
+name: Build
+on: [pull_request]
+
+jobs:
+  build-amd64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Set up GO
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: "go.mod"
+      - name: Run CI
+        run: ./scripts/ci
+      - name: Generate Checksum
+        run: sha256sum dist/artifacts/* > dist/artifacts/sha256sum-amd64.txt
+      - name: Upload Release Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: github_binary_release
+          path: dist/artifacts
+
+  # build-arm64:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v4
+  #     - name: Set up Docker
+  #       run: |
+  #         brew update
+  #         brew install docker
+  #     - name: Set up Docker Buildx
+  #       run: brew install docker-buildx
+  #     - name: Set up GO
+  #       run: |
+  #         export GO_VERSION="go@$(cat go.mod | grep -Eo 'go [0-9]+\.[0-9]+(\.[0-9]+)?' | sed 's/go //')"
+  #         brew install $GO_VERSION
+  #         go version
+  #     - name: Run CI
+  #       run: ./scripts/ci

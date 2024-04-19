@@ -1,0 +1,42 @@
+name: Release
+on:
+  push:
+    tags: '*'
+
+jobs:
+  github-release:
+    runs-on: ubuntu-latest
+
+    env:
+      GH_REPO: "rancher/csp-adapter"
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+        - name: Checkout Code
+          uses: actions/checkout@v4
+        - name: Download Release Artifacts
+          run: |
+            WF_NAME="build"
+            ARTIFACT_NAME="github_binary_release"
+            RUN_ID=`gh run --repo ${GH_REPO} list --workflow ${WF_NAME} --json databaseId --jq .[0].databaseId`
+            gh run --repo ${GH_REPO} download ${RUN_ID} -n ${ARTIFACT_NAME} -D dist/artifacts
+        - name: Checksum
+          run: ./scripts/checksum
+        - name: Create a Release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: ${{ github.ref }}
+            release_name: Release ${{ github.ref_name }}
+            prerelease: true
+        - name: Upload Assets
+          run: |
+            ASSETS_DIR="dist/artifacts"
+            TAG=${{ github.ref_name }}
+            for file in $ASSETS_DIR/*; do
+              gh release upload $TAG $file --repo $GH_REPO
+            done
+
+  push-images:
+    uses: ./.github/workflows/push-images.yml
