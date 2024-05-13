@@ -3,57 +3,43 @@ on:
   pull_request:
 
 jobs:
-  build-amd64:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Set up GO
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: "go.mod"
-      - name: Run CI
-        run: ./scripts/ci
-      - name: Generate Checksum
-        run: sha256sum $(find dist/artifacts -type f ! -name "*.tgz") > dist/artifacts/sha256sum-amd64.txt
-      - name: Upload Release Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: github_dist_amd64
-          path: dist/artifacts
-      - name: Upload Binaries Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: github_bin_amd64
-          path: bin
+  build-multiarch:
+    runs-on: ${{ matrix.platform.run_on }}
 
-  build-arm64:
-    runs-on: [self-hosted, Organization, org--rancher--arm64-containers]
+    strategy:
+      matrix:
+        platform:
+          - arch: amd64
+            run_on: org-${{ github.repository_owner_id }}-amd64-k8s
+          - arch: arm64
+            run_on: org-${{ github.repository_owner_id }}-arm64-k8s
+
+    container:
+      image: rancher/dapper:v0.6.0
+
     steps:
+      - name: Add Git
+        run: apk add -U git
       - name: Checkout Code
         uses: actions/checkout@v4
-      - name: Set up GO
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: "go.mod"
-      - name: Run CI
-        run: ./scripts/ci
+      - name: Run Dapper CI
+        run: dapper ci
       - name: Generate Checksum
-        run: sha256sum $(find dist/artifacts -type f ! -name "*.tgz") > dist/artifacts/sha256sum-arm64.txt
+        run: sha256sum $(find dist/artifacts -type f ! -name "*.tgz") > dist/artifacts/sha256sum-${{ matrix.platform.arch }}.txt
       - name: Upload Release Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: github_dist_arm64
+          name: github_dist_${{ matrix.platform.arch }}
           path: dist/artifacts
       - name: Upload Binaries Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: github_bin_arm64
+          name: github_bin_${{ matrix.platform.arch }}
           path: bin
 
   merge-artifacts:
     runs-on: ubuntu-latest
-    needs: [build-amd64, build-arm64]
+    needs: build-multiarch
     steps:
       - name: Merge Dist Artifacts
         uses: actions/upload-artifact/merge@v4
