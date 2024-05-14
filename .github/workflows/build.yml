@@ -10,9 +10,9 @@ jobs:
       matrix:
         platform:
           - arch: amd64
-            run_on: org-${{ github.repository_owner_id }}-amd64-k8s
+            run_on: runs-on,runner=1cpu-linux-amd64,run-id=${{ github.run_id }}
           - arch: arm64
-            run_on: org-${{ github.repository_owner_id }}-arm64-k8s
+            run_on: runs-on,runner=1cpu-linux-arm64,run-id=${{ github.run_id }}
 
     container:
       image: rancher/dapper:v0.6.0

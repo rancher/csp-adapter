@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   multiarch-push:  
-    runs-on: org-${{ github.repository_owner_id }}-amd64-k8s
+    runs-on: runs-on,runner=1cpu-linux-amd64,run-id=${{ github.run_id }}
 
     strategy:
       matrix:
