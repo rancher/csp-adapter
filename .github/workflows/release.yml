@@ -63,7 +63,7 @@ jobs:
             709825985650.dkr.ecr.us-east-1.amazonaws.com/suse/rancher/rancher-csp-adapter
             709825985650.dkr.ecr.us-east-1.amazonaws.com/suse/rancher/rancher-csp-adapter-eu
           tags: |
-            type=semver,enable=true,suffix=-amd64,pattern={{version}}
+            type=semver,enable=true,suffix=-linux-amd64,pattern={{version}}
           flavor: |
             latest=false
       - name: Read Secrets
