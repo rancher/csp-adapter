@@ -5,10 +5,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: rancher/dapper:v0.6.0
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
       - name: Run Dapper CI
-        run: dapper build
+        run: make build

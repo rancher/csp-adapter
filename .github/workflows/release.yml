@@ -38,9 +38,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Run Dapper CI
-        run: |
-          make 
-          ./.dapper ci
+        run: make ci
       - name: Generate Checksum
         run: |
           cd dist/artifacts 
