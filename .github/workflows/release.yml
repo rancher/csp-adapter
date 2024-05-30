@@ -1,7 +1,7 @@
 name: Release
 on:
   push:
-    tags: '*'
+    tags: 'v*'
 
 # Needed to create the release
 permissions:
@@ -42,7 +42,9 @@ jobs:
           make 
           ./.dapper ci
       - name: Generate Checksum
-        run: sha256sum dist/artifacts/* > dist/artifacts/sha256sum-amd64.txt
+        run: |
+          cd dist/artifacts 
+          sha256sum * > sha256sum-amd64.txt
       - name: Upload Assets
         run: |
           ASSETS_DIR="dist/artifacts"
@@ -58,8 +60,6 @@ jobs:
             docker.io/rancher/rancher-csp-adapter
             709825985650.dkr.ecr.us-east-1.amazonaws.com/suse/rancher/rancher-csp-adapter
             709825985650.dkr.ecr.us-east-1.amazonaws.com/suse/rancher/rancher-csp-adapter-eu
-          tags: |
-            type=semver,enable=true,suffix=-linux-amd64,pattern={{version}}
           flavor: |
             latest=false
       - name: Read Secrets

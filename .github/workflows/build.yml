@@ -8,9 +8,6 @@ jobs:
     container:
       image: rancher/dapper:v0.6.0
     steps:
-      # rancher/dapper:0.6.0 doesn't have a git installation. This is necessary to run actions/checkout
-      - name: Add Git
-        run: apk add -U git
       - name: Checkout Code
         uses: actions/checkout@v4
       - name: Run Dapper CI
