@@ -83,8 +83,6 @@ jobs:
           aws-region: us-east-1
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
-        with:
-          registry-type: public
       - name: Push Images to Registries
         uses: docker/build-push-action@v5
         with:
