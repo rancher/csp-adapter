@@ -21,7 +21,11 @@
 			{
 				"linters": "revive",
 				"text": "should have comment or be unexported"
-			}
+			},
+			{
+				"linters": "revive",
+				"text": "unused-parameter"
+		}
 		]
 	}
 }
