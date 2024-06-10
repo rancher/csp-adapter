@@ -16,7 +16,7 @@ func TestGetRancherLicense(t *testing.T) {
 		hasEmeaLicense        bool   // if the account has a licensed for the EMEA product sku
 		hasTestNonEmeaLicense bool   // if the account has a license for the test non-EMEA product sku
 		hasTestEmeaLicense    bool   // if the account has a license for the test EMEA product sku
-		usesTestIds           bool   // if the account is using a test product id
+		usesTestIDs           bool   // if the account is using a test product id
 		includeProductSku     bool   // if the return from aws should include or exclude a product sku
 		desiredLicense        string // which license our client should pick - emea, non-emea, or nothing
 		errDesired            bool   // if we wanted an error for this test case
@@ -72,14 +72,14 @@ func TestGetRancherLicense(t *testing.T) {
 		{
 			name:                  "test non-emea test license",
 			hasTestNonEmeaLicense: true,
-			usesTestIds:           true,
+			usesTestIDs:           true,
 			includeProductSku:     true,
 			desiredLicense:        rancherProductTestSKUNonEmea,
 		},
 		{
 			name:               "test emea test license",
 			hasTestEmeaLicense: true,
-			usesTestIds:        true,
+			usesTestIDs:        true,
 			includeProductSku:  true,
 			desiredLicense:     rancherProductTestSKUEmea,
 		},
@@ -87,7 +87,7 @@ func TestGetRancherLicense(t *testing.T) {
 			name:                  "test non-emea + emea test license",
 			hasTestNonEmeaLicense: true,
 			hasTestEmeaLicense:    true,
-			usesTestIds:           true,
+			usesTestIDs:           true,
 			includeProductSku:     true,
 			desiredLicense:        rancherProductTestSKUNonEmea,
 		},
@@ -95,7 +95,7 @@ func TestGetRancherLicense(t *testing.T) {
 			name:                  "test non-emea test + prod skus, test requested, test used",
 			hasNonEmeaLicense:     true,
 			hasTestNonEmeaLicense: true,
-			usesTestIds:           true,
+			usesTestIDs:           true,
 			includeProductSku:     true,
 			desiredLicense:        rancherProductTestSKUNonEmea,
 		},
@@ -103,7 +103,7 @@ func TestGetRancherLicense(t *testing.T) {
 			name:                  "test non-emea test + prod skus, prod requested, prod used",
 			hasNonEmeaLicense:     true,
 			hasTestNonEmeaLicense: true,
-			usesTestIds:           false,
+			usesTestIDs:           false,
 			includeProductSku:     true,
 			desiredLicense:        rancherProductSKUNonEmea,
 		},
@@ -116,7 +116,7 @@ func TestGetRancherLicense(t *testing.T) {
 				acctNum:         fakeAccountNum,
 				lm:              &mockLMClient,
 				sts:             &mockSTSClient{accountNumber: fakeAccountNum},
-				useTestProducts: test.usesTestIds,
+				useTestProducts: test.usesTestIDs,
 			}
 			if test.hasNonEmeaLicense {
 				mockLMClient.AddLicenseForSku(rancherProductSKUNonEmea, fakeAccountNum, test.includeProductSku)
