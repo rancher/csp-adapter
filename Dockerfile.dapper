@@ -4,7 +4,7 @@ ARG DAPPER_HOST_ARCH
 ENV ARCH $DAPPER_HOST_ARCH
 
 RUN zypper -n up && \
-    zypper -n in git docker vim less file curl wget ca-certificates
+    zypper -n in git docker vim less file curl wget ca-certificates gawk
 RUN if [ "${ARCH}" == "amd64" ]; then \
     curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.51.2; \
     fi
