@@ -83,7 +83,7 @@ jobs:
           aws-secret-access-key: ${{ env.ECR_SECRET_KEY }}
           aws-region: us-east-1
       - name: Login to ECR
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
       - name: Push Images to Registries
@@ -110,7 +110,7 @@ jobs:
           aws-secret-access-key: ${{ env.ECR_SECRET_KEY_EU }}
           aws-region: us-east-1
       - name: Login to ECR for EU Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
       - name: Push Images to EU Registry
