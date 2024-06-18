@@ -87,7 +87,7 @@ jobs:
         with:
           registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
       - name: Push Images to Registries
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
@@ -114,7 +114,7 @@ jobs:
         with:
           registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
       - name: Push Images to EU Registry
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           push: true
