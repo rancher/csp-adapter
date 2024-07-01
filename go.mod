@@ -5,12 +5,12 @@ go 1.22.0
 toolchain go1.22.3
 
 replace (
-	github.com/rancher/rancher/pkg/apis => github.com/rancher/rancher/pkg/apis v0.0.0-20240613110601-c21147a009c6
-	github.com/rancher/rancher/pkg/client => github.com/rancher/rancher/pkg/client v0.0.0-20240610151122-20188080434a
+	github.com/rancher/rancher/pkg/apis => github.com/rancher/rancher/pkg/apis v0.0.0-20240626155542-2af21de43930
+	github.com/rancher/rancher/pkg/client => github.com/rancher/rancher/pkg/client v0.0.0-20240626155542-2af21de43930
 	k8s.io/api => k8s.io/api v0.30.1
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.30.1
 	k8s.io/apimachinery => k8s.io/apimachinery v0.30.1
-	k8s.io/apiserver => k8s.io/apiserver v0.30.2
+	k8s.io/apiserver => k8s.io/apiserver v0.30.1
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.30.1
 	k8s.io/client-go => k8s.io/client-go v0.30.1
 	k8s.io/cloud-provider => k8s.io/cloud-provider v0.30.1
@@ -39,12 +39,12 @@ require (
 	github.com/prometheus/client_model v0.5.0
 	github.com/prometheus/common v0.45.0
 	github.com/rancher/lasso v0.0.0-20240603075835-701e919d08b7
-	github.com/rancher/rancher/pkg/apis v0.0.0
-	github.com/rancher/wrangler/v2 v2.2.0-rc6
+	github.com/rancher/rancher/pkg/apis v0.0.0-20240613110601-c21147a009c6
+	github.com/rancher/wrangler/v3 v3.0.0-rc2
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.9.0
-	k8s.io/api v0.30.2
-	k8s.io/apimachinery v0.30.2
+	k8s.io/api v0.30.1
+	k8s.io/apimachinery v0.30.1
 	k8s.io/client-go v12.0.0+incompatible
 )
 
@@ -109,7 +109,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/apiextensions-apiserver v0.30.1 // indirect
 	k8s.io/apiserver v0.30.1 // indirect
-	k8s.io/component-base v0.30.2 // indirect
+	k8s.io/component-base v0.30.1 // indirect
 	k8s.io/klog v1.0.0 // indirect
 	k8s.io/klog/v2 v2.120.1 // indirect
 	k8s.io/kube-aggregator v0.30.1 // indirect

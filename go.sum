@@ -127,8 +127,8 @@ github.com/rancher/lasso v0.0.0-20240603075835-701e919d08b7 h1:E5AeOkylBXf4APhnH
 github.com/rancher/lasso v0.0.0-20240603075835-701e919d08b7/go.mod h1:v0FJLrmL4m6zdWfIB0/qo7qN5QIjVMFyvFGaw8uyWsA=
 github.com/rancher/norman v0.0.0-20240604183301-20cd23aadce1 h1:7g0yOiUGfT4zK4N9H0PSijnS/e2YrObi4Gj19JgE1L8=
 github.com/rancher/norman v0.0.0-20240604183301-20cd23aadce1/go.mod h1:sGnN5ayvAHLfInOFZ4N1fzZw1IMy3i+9PZA7IxlPsRg=
-github.com/rancher/rancher/pkg/apis v0.0.0-20240613110601-c21147a009c6 h1:JGMLwdfrtVK5bJRArq1mvDIxEnqaGlGlsky30NKjEfo=
-github.com/rancher/rancher/pkg/apis v0.0.0-20240613110601-c21147a009c6/go.mod h1:p2Q9Kq+sNK3VTtxMbv1mCzmAbcMgzf6baxaMQroLbmY=
+github.com/rancher/rancher/pkg/apis v0.0.0-20240626155542-2af21de43930 h1:+lM2d2ZPDIOTgW/1FPjeywUleQyrCWqSjVEUVMLcZ/s=
+github.com/rancher/rancher/pkg/apis v0.0.0-20240626155542-2af21de43930/go.mod h1:s0mZ1KN1o1qPi7elkDo/3czA/9u4G8bvdPgF3ZYnjtM=
 github.com/rancher/rke v1.6.0-rc7 h1:AfKugPEJtZrjgbcr5zGTwTuv18GJAUUMOMKaXUbT8TU=
 github.com/rancher/rke v1.6.0-rc7/go.mod h1:5xRbf3L8PxqJRhABjYRfaBqbpVqAnqyH3maUNQEuwvk=
 github.com/rancher/wrangler/v2 v2.2.0-rc6 h1:jMsuOVl7nBuQ5QJqdNkR2yHEf1+rYiyd1gN+mQzIcag=
@@ -214,8 +214,8 @@ k8s.io/apiextensions-apiserver v0.30.1 h1:4fAJZ9985BmpJG6PkoxVRpXv9vmPUOVzl614xa
 k8s.io/apiextensions-apiserver v0.30.1/go.mod h1:R4GuSrlhgq43oRY9sF2IToFh7PVlF1JjfWdoG3pixk4=
 k8s.io/apimachinery v0.30.1 h1:ZQStsEfo4n65yAdlGTfP/uSHMQSoYzU/oeEbkmF7P2U=
 k8s.io/apimachinery v0.30.1/go.mod h1:iexa2somDaxdnj7bha06bhb43Zpa6eWH8N8dbqVjTUc=
-k8s.io/apiserver v0.30.2 h1:ACouHiYl1yFI2VFI3YGM+lvxgy6ir4yK2oLOsLI1/tw=
-k8s.io/apiserver v0.30.2/go.mod h1:BOTdFBIch9Sv0ypSEcUR6ew/NUFGocRFNl72Ra7wTm8=
+k8s.io/apiserver v0.30.1 h1:BEWEe8bzS12nMtDKXzCF5Q5ovp6LjjYkSp8qOPk8LZ8=
+k8s.io/apiserver v0.30.1/go.mod h1:i87ZnQ+/PGAmSbD/iEKM68bm1D5reX8fO4Ito4B01mo=
 k8s.io/client-go v0.30.1 h1:uC/Ir6A3R46wdkgCV3vbLyNOYyCJ8oZnjtJGKfytl/Q=
 k8s.io/client-go v0.30.1/go.mod h1:wrAqLNs2trwiCH/wxxmT/x3hKVH9PuV0GGW0oDoHVqc=
 k8s.io/component-base v0.30.1 h1:bvAtlPh1UrdaZL20D9+sWxsJljMi0QZ3Lmw+kmZAaxQ=
