@@ -646,8 +646,8 @@ github.com/qri-io/starlib v0.4.2-0.20200213133954-ff2e8cd5ef8d/go.mod h1:7DPO4do
 github.com/rackspace/gophercloud v0.0.0-20150408191457-ce0f487f6747/go.mod h1:4bJ1FwuaBZ6dt1VcDX5/O662mwR8GWqS4l68H6hkoYQ=
 github.com/rancher/aks-operator v1.0.5 h1:O0pLGdXuQWtBbnqtzUi/H5sN4nIQZgz/d547eDv8br0=
 github.com/rancher/aks-operator v1.0.5/go.mod h1:4AAOJmPqW41ko6L6cy7BOWbHEko7Yjcho1YP+KPAt+Y=
-github.com/rancher/client-go v1.27.4-rancher1 h1:1W1A0bV6KXYbu1z+KIezlfLsHPc1wiasAM42BICVKBM=
-github.com/rancher/client-go v1.27.4-rancher1/go.mod h1:ragcly7lUlN0SRPk5/ZkGnDjPknzb37TICq07WhI6Xc=
+github.com/rancher/client-go v1.27.4-rancher1-hotfix-ch-1-4087e280 h1:uCI5n4jgVO1oZFQOu21d1C22DSRBslBYgKEK4UMKmJA=
+github.com/rancher/client-go v1.27.4-rancher1-hotfix-ch-1-4087e280/go.mod h1:ragcly7lUlN0SRPk5/ZkGnDjPknzb37TICq07WhI6Xc=
 github.com/rancher/eks-operator v1.1.3 h1:x1c0T0mXjKA3HHbbQsfx9k8xFHsNo0GSYGO/5yQOgjo=
 github.com/rancher/eks-operator v1.1.3/go.mod h1:N0zzDJ+xvv6BkXRMjIBlFObOmud5H1sSOccG0FS+DJM=
 github.com/rancher/fleet/pkg/apis v0.0.0-20210918015053-5a141a6b18f0 h1:2A92uT1+4GUdZolQg5wfOSLa6RFRkfpnc3Iw7+Z/Bk8=
