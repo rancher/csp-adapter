@@ -12,5 +12,5 @@ annotations:
   catalog.cattle.io/scope: management
   catalog.cattle.io/os: linux
   catalog.cattle.io/permits-os: linux
-  catalog.cattle.io/rancher-version: '>= 2.9.0-0 < 2.10.0-0'
-  catalog.cattle.io/kube-version: '>= 1.27.0-0 < 1.31.0-0'
+  catalog.cattle.io/rancher-version: '>= 2.10.0-0 < 2.11.0-0'
+  catalog.cattle.io/kube-version: '>= 1.27.0-0 < 1.32.0-0'
