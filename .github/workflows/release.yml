@@ -93,7 +93,7 @@ jobs:
         uses: rancher/ecm-distro-tools/actions/publish-image@master
         with:
           image: rancher-csp-adapter
-          tag: ${{ steps.metadata.outputs.tags }}
+          tag: ${{ github.ref_name }}
           platforms: linux/amd64
           public-registry: docker.io
           public-repo: rancher
