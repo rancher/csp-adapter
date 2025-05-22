@@ -25,7 +25,7 @@ replace (
 	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.31.1
 	k8s.io/kubectl => k8s.io/kubectl v0.31.1
 	k8s.io/kubelet => k8s.io/kubelet v0.31.1
-	k8s.io/kubernetes => k8s.io/kubernetes v1.31.1
+	k8s.io/kubernetes => k8s.io/kubernetes v1.31.6
 	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.31.1
 	k8s.io/metrics => k8s.io/metrics v0.31.1
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.31.1
@@ -38,9 +38,9 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/prometheus/client_model v0.6.1
 	github.com/prometheus/common v0.55.0
-	github.com/rancher/lasso v0.2.1
+	github.com/rancher/lasso v0.2.2
 	github.com/rancher/rancher/pkg/apis v0.0.0-20241016054005-0cddb5f14670
-	github.com/rancher/wrangler/v3 v3.2.0-rc.3
+	github.com/rancher/wrangler/v3 v3.2.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.10.0
 	k8s.io/api v0.32.2
