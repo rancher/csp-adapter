@@ -1,34 +1,34 @@
 module github.com/rancher/csp-adapter
 
-go 1.23.4
+go 1.24.0
 
-toolchain go1.23.6
+toolchain go1.24.5
 
 replace (
 	github.com/rancher/rancher/pkg/apis => github.com/rancher/rancher/pkg/apis v0.0.0-20250228215629-58179cddfc45
 	github.com/rancher/rancher/pkg/client => github.com/rancher/rancher/pkg/client v0.0.0-20250228215629-58179cddfc45
-	k8s.io/api => k8s.io/api v0.31.1
-	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.31.1
-	k8s.io/apimachinery => k8s.io/apimachinery v0.31.1
-	k8s.io/apiserver => k8s.io/apiserver v0.31.1
-	k8s.io/cli-runtime => k8s.io/cli-runtime v0.31.1
-	k8s.io/client-go => k8s.io/client-go v0.31.1
-	k8s.io/cloud-provider => k8s.io/cloud-provider v0.31.1
-	k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.31.1
-	k8s.io/code-generator => k8s.io/code-generator v0.31.1
-	k8s.io/component-base => k8s.io/component-base v0.31.1
-	k8s.io/cri-api => k8s.io/cri-api v0.31.1
-	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.31.1
-	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.31.1
-	k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.31.1
-	k8s.io/kube-proxy => k8s.io/kube-proxy v0.31.1
-	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.31.1
-	k8s.io/kubectl => k8s.io/kubectl v0.31.1
-	k8s.io/kubelet => k8s.io/kubelet v0.31.1
-	k8s.io/kubernetes => k8s.io/kubernetes v1.31.6
-	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.31.1
-	k8s.io/metrics => k8s.io/metrics v0.31.1
-	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.31.1
+	k8s.io/api => k8s.io/api v0.32.7
+	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.32.7
+	k8s.io/apimachinery => k8s.io/apimachinery v0.32.7
+	k8s.io/apiserver => k8s.io/apiserver v0.32.7
+	k8s.io/cli-runtime => k8s.io/cli-runtime v0.32.7
+	k8s.io/client-go => k8s.io/client-go v0.32.7
+	k8s.io/cloud-provider => k8s.io/cloud-provider v0.32.7
+	k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.32.7
+	k8s.io/code-generator => k8s.io/code-generator v0.32.7
+	k8s.io/component-base => k8s.io/component-base v0.32.7
+	k8s.io/cri-api => k8s.io/cri-api v0.32.7
+	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.32.7
+	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.32.7
+	k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.32.7
+	k8s.io/kube-proxy => k8s.io/kube-proxy v0.32.7
+	k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.32.7
+	k8s.io/kubectl => k8s.io/kubectl v0.32.7
+	k8s.io/kubelet => k8s.io/kubelet v0.32.7
+	k8s.io/kubernetes => k8s.io/kubernetes v1.32.7
+	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.32.7
+	k8s.io/metrics => k8s.io/metrics v0.32.7
+	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.32.7
 )
 
 require (
@@ -43,8 +43,8 @@ require (
 	github.com/rancher/wrangler/v3 v3.2.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.10.0
-	k8s.io/api v0.32.2
-	k8s.io/apimachinery v0.32.2
+	k8s.io/api v0.32.7
+	k8s.io/apimachinery v0.32.7
 	k8s.io/client-go v12.0.0+incompatible
 )
 
@@ -77,7 +77,7 @@ require (
 	github.com/google/gnostic-models v0.6.9 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
-	github.com/imdario/mergo v0.3.16 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
@@ -95,14 +95,17 @@ require (
 	github.com/rancher/gke-operator v1.11.0-rc.2 // indirect
 	github.com/rancher/norman v0.5.2 // indirect
 	github.com/rancher/rke v1.8.0-rc.2 // indirect
+	github.com/spf13/cobra v1.8.1 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
-	golang.org/x/net v0.35.0 // indirect
-	golang.org/x/oauth2 v0.26.0 // indirect
-	golang.org/x/sync v0.11.0 // indirect
-	golang.org/x/sys v0.30.0 // indirect
-	golang.org/x/term v0.29.0 // indirect
-	golang.org/x/text v0.22.0 // indirect
+	go.opentelemetry.io/otel v1.34.0 // indirect
+	go.opentelemetry.io/otel/trace v1.34.0 // indirect
+	golang.org/x/net v0.38.0 // indirect
+	golang.org/x/oauth2 v0.27.0 // indirect
+	golang.org/x/sync v0.12.0 // indirect
+	golang.org/x/sys v0.31.0 // indirect
+	golang.org/x/term v0.30.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
 	golang.org/x/time v0.10.0 // indirect
 	google.golang.org/protobuf v1.36.5 // indirect
 	gopkg.in/evanphx/json-patch.v4 v4.12.0 // indirect
@@ -110,8 +113,8 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/apiextensions-apiserver v0.32.2 // indirect
-	k8s.io/apiserver v0.32.2 // indirect
-	k8s.io/component-base v0.32.2 // indirect
+	k8s.io/apiserver v0.32.7 // indirect
+	k8s.io/component-base v0.32.7 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-aggregator v0.32.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20241105132330-32ad38e42d3f // indirect
