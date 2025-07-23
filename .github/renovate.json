@@ -1,7 +1,16 @@
 {
-  "extends": [
-    "github>rancher/renovate-config#release"
-  ],
-  "baseBranches": [],
-  "prHourlyLimit": 2
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["github>rancher/renovate-config#release"],
+  "baseBranchPatterns": ["main"],
+  "packageRules": [
+    {
+      "matchManagers": ["github-actions"],
+      "pinDigests": true,
+      "schedule": ["* 4 * * 1/2"]
+    },
+    {
+      "matchPackageNames": ["renovate/renovate"],
+      "schedule": ["* * * * 2"]
+    }
+  ]
 }
