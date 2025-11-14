@@ -9,7 +9,7 @@ replace (
 	github.com/rancher/rancher/pkg/client => github.com/rancher/rancher/pkg/client v0.0.0-20250930175048-be62f9228366
 	k8s.io/api => k8s.io/api v0.34.1
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.34.1
-	k8s.io/apimachinery => k8s.io/apimachinery v0.34.1
+	k8s.io/apimachinery => k8s.io/apimachinery v0.34.2
 	k8s.io/apiserver => k8s.io/apiserver v0.34.1
 	k8s.io/cli-runtime => k8s.io/cli-runtime v0.34.1
 	k8s.io/client-go => k8s.io/client-go v0.34.1
@@ -17,7 +17,7 @@ replace (
 	k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.34.1
 	k8s.io/code-generator => k8s.io/code-generator v0.34.1
 	k8s.io/component-base => k8s.io/component-base v0.34.1
-	k8s.io/cri-api => k8s.io/cri-api v0.34.1
+	k8s.io/cri-api => k8s.io/cri-api v0.34.2
 	k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.34.1
 	k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.34.1
 	k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.34.1
@@ -44,7 +44,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/stretchr/testify v1.10.0
 	k8s.io/api v0.34.1
-	k8s.io/apimachinery v0.34.1
+	k8s.io/apimachinery v0.34.2
 	k8s.io/client-go v12.0.0+incompatible
 )
 
