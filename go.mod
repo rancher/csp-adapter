@@ -1,8 +1,6 @@
 module github.com/rancher/csp-adapter
 
-go 1.24.0
-
-toolchain go1.24.6
+go 1.25.4
 
 replace (
 	github.com/rancher/rancher/pkg/apis => github.com/rancher/rancher/pkg/apis v0.0.0-20250930175048-be62f9228366
