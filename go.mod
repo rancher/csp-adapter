@@ -31,7 +31,7 @@ replace (
 
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.31.19
-	github.com/aws/aws-sdk-go-v2/service/licensemanager v1.28.3
+	github.com/aws/aws-sdk-go-v2/service/licensemanager v1.36.11
 	github.com/aws/aws-sdk-go-v2/service/sts v1.40.1
 	github.com/google/uuid v1.6.0
 	github.com/prometheus/client_model v0.6.1
