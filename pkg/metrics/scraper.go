@@ -7,6 +7,7 @@ import (
 
 	prometheusClient "github.com/prometheus/client_model/go"
 	"github.com/prometheus/common/expfmt"
+	"github.com/prometheus/common/model"
 	"github.com/sirupsen/logrus"
 	"k8s.io/client-go/rest"
 )
@@ -57,7 +58,7 @@ func (s *scraper) ScrapeAndParse() (*NodeCounts, error) {
 		return nil, fmt.Errorf("error got %v response", res.StatusCode)
 	}
 
-	var parser expfmt.TextParser
+	parser := expfmt.NewTextParser(model.UTF8Validation)
 	metricFamilies, err := parser.TextToMetricFamilies(res.Body)
 	if err != nil {
 		return nil, err
