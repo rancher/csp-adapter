@@ -3,8 +3,8 @@ module github.com/rancher/csp-adapter
 go 1.25.4
 
 replace (
-	github.com/rancher/rancher/pkg/apis => github.com/rancher/rancher/pkg/apis v0.0.0-20260120133950-5fa2f084a0b8
-	github.com/rancher/rancher/pkg/client => github.com/rancher/rancher/pkg/client v0.0.0-20260120133950-5fa2f084a0b8
+	github.com/rancher/rancher/pkg/apis => github.com/rancher/rancher/pkg/apis v0.0.0-20260126172908-1d729827e8bb
+	github.com/rancher/rancher/pkg/client => github.com/rancher/rancher/pkg/client v0.0.0-20260126172908-1d729827e8bb
 	k8s.io/api => k8s.io/api v0.35.0
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.35.0
 	k8s.io/apimachinery => k8s.io/apimachinery v0.35.0
@@ -24,14 +24,13 @@ replace (
 	k8s.io/kubectl => k8s.io/kubectl v0.35.0
 	k8s.io/kubelet => k8s.io/kubelet v0.35.0
 	k8s.io/kubernetes => k8s.io/kubernetes v1.35.0
-	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.35.0
 	k8s.io/metrics => k8s.io/metrics v0.35.0
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.35.0
 )
 
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.32.7
-	github.com/aws/aws-sdk-go-v2/service/licensemanager v1.37.5
+	github.com/aws/aws-sdk-go-v2/service/licensemanager v1.37.6
 	github.com/aws/aws-sdk-go-v2/service/sts v1.41.6
 	github.com/google/uuid v1.6.0
 	github.com/prometheus/client_model v0.6.2
@@ -83,12 +82,12 @@ require (
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/prometheus/client_golang v1.23.2 // indirect
 	github.com/prometheus/procfs v0.16.1 // indirect
-	github.com/rancher/aks-operator v1.13.1 // indirect
-	github.com/rancher/ali-operator v1.13.0 // indirect
-	github.com/rancher/eks-operator v1.13.1 // indirect
-	github.com/rancher/fleet/pkg/apis v0.14.2-rc.1 // indirect
-	github.com/rancher/gke-operator v1.13.1 // indirect
-	github.com/rancher/norman v0.7.2 // indirect
+	github.com/rancher/aks-operator v1.13.0-rc.4 // indirect
+	github.com/rancher/ali-operator v1.13.0-rc.2 // indirect
+	github.com/rancher/eks-operator v1.13.0-rc.4 // indirect
+	github.com/rancher/fleet/pkg/apis v0.15.0-alpha.4 // indirect
+	github.com/rancher/gke-operator v1.13.0-rc.3 // indirect
+	github.com/rancher/norman v0.8.1 // indirect
 	github.com/rancher/rke v1.8.0 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
@@ -102,19 +101,19 @@ require (
 	golang.org/x/sys v0.39.0 // indirect
 	golang.org/x/term v0.38.0 // indirect
 	golang.org/x/text v0.32.0 // indirect
-	golang.org/x/time v0.14.0 // indirect
+	golang.org/x/time v0.13.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/evanphx/json-patch.v4 v4.13.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/apiextensions-apiserver v0.34.3 // indirect
+	k8s.io/apiextensions-apiserver v0.34.1 // indirect
 	k8s.io/apiserver v0.35.0 // indirect
 	k8s.io/component-base v0.35.0 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-aggregator v0.34.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20250910181357-589584f1c912 // indirect
-	k8s.io/kubernetes v1.34.3 // indirect
+	k8s.io/kubernetes v1.34.1 // indirect
 	k8s.io/utils v0.0.0-20251002143259-bc988d571ff4 // indirect
 	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730 // indirect
 	sigs.k8s.io/randfill v1.0.0 // indirect
