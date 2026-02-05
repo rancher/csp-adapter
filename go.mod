@@ -3,8 +3,8 @@ module github.com/rancher/csp-adapter
 go 1.25.4
 
 replace (
-	github.com/rancher/rancher/pkg/apis => github.com/rancher/rancher/pkg/apis v0.0.0-20260126172908-1d729827e8bb
-	github.com/rancher/rancher/pkg/client => github.com/rancher/rancher/pkg/client v0.0.0-20260126172908-1d729827e8bb
+	github.com/rancher/rancher/pkg/apis => github.com/rancher/rancher/pkg/apis v0.0.0-20260205182150-195bb04d4f38
+	github.com/rancher/rancher/pkg/client => github.com/rancher/rancher/pkg/client v0.0.0-20260205182150-195bb04d4f38
 	k8s.io/api => k8s.io/api v0.35.0
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.35.0
 	k8s.io/apimachinery => k8s.io/apimachinery v0.35.0
@@ -24,6 +24,7 @@ replace (
 	k8s.io/kubectl => k8s.io/kubectl v0.35.0
 	k8s.io/kubelet => k8s.io/kubelet v0.35.0
 	k8s.io/kubernetes => k8s.io/kubernetes v1.35.0
+	k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.35.0
 	k8s.io/metrics => k8s.io/metrics v0.35.0
 	k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.35.0
 )
@@ -35,9 +36,9 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/prometheus/client_model v0.6.2
 	github.com/prometheus/common v0.67.5
-	github.com/rancher/lasso v0.2.5
-	github.com/rancher/rancher/pkg/apis v0.0.0-20241016054005-0cddb5f14670
-	github.com/rancher/wrangler/v3 v3.3.1
+	github.com/rancher/lasso v0.2.6
+	github.com/rancher/rancher/pkg/apis v0.0.0-20260205182150-195bb04d4f38
+	github.com/rancher/wrangler/v3 v3.3.2-rc.1
 	github.com/sirupsen/logrus v1.9.4
 	github.com/stretchr/testify v1.11.1
 	k8s.io/api v0.35.0
@@ -85,7 +86,7 @@ require (
 	github.com/rancher/aks-operator v1.13.0-rc.4 // indirect
 	github.com/rancher/ali-operator v1.13.0-rc.2 // indirect
 	github.com/rancher/eks-operator v1.13.0-rc.4 // indirect
-	github.com/rancher/fleet/pkg/apis v0.15.0-alpha.4 // indirect
+	github.com/rancher/fleet/pkg/apis v0.15.0-alpha.6 // indirect
 	github.com/rancher/gke-operator v1.13.0-rc.3 // indirect
 	github.com/rancher/norman v0.8.1 // indirect
 	github.com/rancher/rke v1.8.0 // indirect
@@ -107,13 +108,13 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/apiextensions-apiserver v0.34.1 // indirect
+	k8s.io/apiextensions-apiserver v0.35.0 // indirect
 	k8s.io/apiserver v0.35.0 // indirect
 	k8s.io/component-base v0.35.0 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
-	k8s.io/kube-aggregator v0.34.1 // indirect
+	k8s.io/kube-aggregator v0.35.0 // indirect
 	k8s.io/kube-openapi v0.0.0-20250910181357-589584f1c912 // indirect
-	k8s.io/kubernetes v1.34.1 // indirect
+	k8s.io/kubernetes v1.35.0 // indirect
 	k8s.io/utils v0.0.0-20251002143259-bc988d571ff4 // indirect
 	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730 // indirect
 	sigs.k8s.io/randfill v1.0.0 // indirect

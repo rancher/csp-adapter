@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6 
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6 
 
       - name: Create a Release
         id: create_release
@@ -34,7 +34,7 @@ jobs:
     needs: [create-release]
     steps:
       - name: Checkout Code
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6 
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6 
 
       - name: Setup GO
         uses: ./.github/actions/setup
@@ -110,7 +110,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Login to ECR
-        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
 
@@ -141,7 +141,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Login to ECR for EU Registry
-        uses: docker/login-action@5e57cd118135c172c3672efd75eb46360885c0ef # v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: 709825985650.dkr.ecr.us-east-1.amazonaws.com
 
