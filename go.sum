@@ -16,8 +16,8 @@ github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.13.6 h1:XAq62tB
 github.com/aws/aws-sdk-go-v2/service/internal/accept-encoding v1.13.6/go.mod h1:x0nZssQ3qZSnIcePWLvcoFisRXJzcTVvYpAAdYX8+GI=
 github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.13.19 h1:X1Tow7suZk9UCJHE1Iw9GMZJJl0dAnKXXP1NaSDHwmw=
 github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.13.19/go.mod h1:/rARO8psX+4sfjUQXp5LLifjUt8DuATZ31WptNJTyQA=
-github.com/aws/aws-sdk-go-v2/service/licensemanager v1.37.8 h1:AVOKaJABEvn1I2qpP4y3dYJGZ9jP9wR/RgGjJFEKemk=
-github.com/aws/aws-sdk-go-v2/service/licensemanager v1.37.8/go.mod h1:/IrX7LdncVqiMBN1VLChuc8n2bgukzOWYaM9/ybGid4=
+github.com/aws/aws-sdk-go-v2/service/licensemanager v1.37.6 h1:1SSkGYoKOYhpyiNmwVCJ1MPw8WzenZNG4r/j2RjQASM=
+github.com/aws/aws-sdk-go-v2/service/licensemanager v1.37.6/go.mod h1:5PjsoCYFWYF0sXYhxJ0sY1VzemMEwOjT7KEsTyeFewM=
 github.com/aws/aws-sdk-go-v2/service/signin v1.0.7 h1:Y2cAXlClHsXkkOvWZFXATr34b0hxxloeQu/pAZz2row=
 github.com/aws/aws-sdk-go-v2/service/signin v1.0.7/go.mod h1:idzZ7gmDeqeNrSPkdbtMp9qWMgcBwykA7P7Rzh5DXVU=
 github.com/aws/aws-sdk-go-v2/service/sso v1.30.12 h1:iSsvB9EtQ09YrsmIc44Heqlx5ByGErqhPK1ZQLppias=
