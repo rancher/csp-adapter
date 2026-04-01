@@ -154,3 +154,21 @@ jobs:
           labels: ${{ steps.metadata_eu.outputs.labels }}
           file: package/Dockerfile
           platforms: linux/amd64
+
+      - name: Set RC Tag Output
+        id: tagcheck
+        run: |
+          TAG="${{ github.ref_name }}"
+          if [[ "${TAG,,}" == *rc ]]; then
+            echo "rc=true" >> $GITHUB_OUTPUT
+          else
+            echo "rc=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish Release
+        if: steps.tagcheck.outputs.rc == 'false'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release edit -R ${{ github.repository }} ${{ github.ref_name }} --draft=false
