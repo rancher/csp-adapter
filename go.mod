@@ -15,12 +15,12 @@ require (
 	github.com/prometheus/client_model v0.6.2
 	github.com/prometheus/common v0.67.5
 	github.com/rancher/lasso v0.2.9
-	github.com/rancher/rancher/pkg/apis v0.0.0-20260612083607-b65cc8639b96
+	github.com/rancher/rancher/pkg/apis v0.0.0-20260623035923-54a4d394933b
 	github.com/rancher/wrangler/v3 v3.7.0
 	github.com/sirupsen/logrus v1.9.4
 	github.com/stretchr/testify v1.11.1
-	k8s.io/api v0.36.1
-	k8s.io/apimachinery v0.36.1
+	k8s.io/api v0.36.2
+	k8s.io/apimachinery v0.36.2
 	k8s.io/client-go v12.0.0+incompatible
 )
 
@@ -71,7 +71,7 @@ require (
 	github.com/rancher/aks-operator v1.15.0-rc.2 // indirect
 	github.com/rancher/ali-operator v1.15.0-rc.2 // indirect
 	github.com/rancher/eks-operator v1.15.0-rc.2 // indirect
-	github.com/rancher/fleet/pkg/apis v0.16.0-alpha.9 // indirect
+	github.com/rancher/fleet/pkg/apis v0.16.0-beta.1 // indirect
 	github.com/rancher/gke-operator v1.15.0-rc.2 // indirect
 	github.com/rancher/norman v0.9.7 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
