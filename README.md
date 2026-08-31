@@ -1,5 +1,10 @@
 # Rancher CSP Adapter
 
+> [!WARNING]
+> **Out of Support Notice**
+>
+> This project is unsupported from November 2026.
+
 This project is the adapter for rancher's integration with various cloud provider billing services (just does aws for now).
 
 ## Purpose
